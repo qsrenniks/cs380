@@ -5,7 +5,7 @@ using UnityEngine;
 public class StoneFloat : MonoBehaviour
 {
     public float speed;
-    private Light light;
+    private new Light light;
 
     void Start()
     {

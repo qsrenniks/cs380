@@ -6,15 +6,15 @@ using UnityEngine.UI;
 public class RainController : MonoBehaviour
 {
     [Range(0, 1f)]
-    public float masterIntensity = 1f;
+     float masterIntensity = 1f;
     [Range(0, 1f)]
-    public float rainIntensity = 1f;
+     float rainIntensity = 1f;
     [Range(0, 1f)]
-    public float windIntensity = 1f;
+     float windIntensity = 1f;
     [Range(0, 1f)]
-    public float fogIntensity = 1f;
+     float fogIntensity = 1f;
     [Range(0, 1f)]
-    public float lightningIntensity = 1f;
+    float lightningIntensity = 1f;
     public bool autoUpdate;
 
     public ParticleSystem rainPart;
@@ -49,41 +49,41 @@ public class RainController : MonoBehaviour
     }
 
     void UpdateAll(){
-        rainEmission.rate = 200f * masterIntensity * rainIntensity;
+        rainEmission.rateOverTime = 200f * masterIntensity * rainIntensity;
         rainForce.x = new ParticleSystem.MinMaxCurve(-25f * windIntensity * masterIntensity, (-3-30f * windIntensity) * masterIntensity);
-        windEmission.rate = 5f * masterIntensity * (windIntensity + fogIntensity);
+        windEmission.rateOverTime = 5f * masterIntensity * (windIntensity + fogIntensity);
         windMain.startLifetime = 2f + 5f * (1f - windIntensity);
         windMain.startSpeed = new ParticleSystem.MinMaxCurve(15f * windIntensity, 25 * windIntensity);
-        fogEmission.rate = (1f + (rainIntensity + windIntensity)*0.5f) * fogIntensity * masterIntensity;
+        fogEmission.rateOverTime = (1f + (rainIntensity + windIntensity)*0.5f) * fogIntensity * masterIntensity;
         if (rainIntensity * masterIntensity < 0.7f)
-            lightningEmission.rate = 0;
+            lightningEmission.rateOverTime = 0;
         else
-            lightningEmission.rate = lightningIntensity * masterIntensity * 0.4f;
+            lightningEmission.rateOverTime = lightningIntensity * masterIntensity * 0.4f;
     }
 
     public void OnMasterChanged(float value)
     {
         masterIntensity = value;
-        UpdateAll();
+        //UpdateAll();
     }
     public void OnRainChanged(float value)
     {
         rainIntensity = value;
-        UpdateAll();
+        //UpdateAll();
     }
     public void OnWindChanged(float value)
     {
         windIntensity = value;
-        UpdateAll();
+        //UpdateAll();
     }
     public void OnLightningChanged(float value)
     {
         lightningIntensity = value;
-        UpdateAll();
+        //UpdateAll();
     }
     public void OnFogChanged(float value)
     {
         fogIntensity = value;
-        UpdateAll();
+        //UpdateAll();
     }
 }
