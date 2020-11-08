@@ -101,6 +101,7 @@ public class VillageManager : MonoBehaviour
             VillagerBaseBehavior villagerData = population[i].GetComponent<VillagerBaseBehavior>();
             if (villagerData.generation == oldestGeneration)
             {
+                villagerData.partner.GetComponent<VillagerBaseBehavior>().partner = null;
                 Destroy(population[i], .5f);
                 population.Remove(population[i]);
             }
