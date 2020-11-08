@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject villageManagerPrefab;
     private VillageManager villageManager;
-    private TimeManager.Timer repopulateTimer;
+    private TimeManager.GameTimer repopulateTimer;
 
     public static GameManager Instance
     {
@@ -83,17 +83,17 @@ public class GameManager : MonoBehaviour
     {
         villageManager = Instantiate(villageManagerPrefab).GetComponent<VillageManager>();
         villageManager.CreateInitialPopulation();
-        repopulateTimer = new TimeManager.Timer(10.0f);
+        repopulateTimer = new TimeManager.GameTimer(7300);
+        repopulateTimer.isCompleted = true;
     }
 
     // Update is called once per frame
     void Update()
     {
         repopulateTimer.Update();
-        if (repopulateTimer.isDone())
+        if (repopulateTimer.isCompleted == true)
         {
             villageManager.Repopulate();
-            villageManager.CullTheOldestGeneration();
             repopulateTimer.reset();
         }
     }

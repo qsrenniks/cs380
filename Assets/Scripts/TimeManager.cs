@@ -39,7 +39,7 @@ public class TimeManager : MonoBehaviour
         }
         public void Update()
         {
-            if (!isCompleted && ((dayStarted + daysToGo) >= Instance.rawDay))
+            if (!isCompleted && ((dayStarted + daysToGo) <= Instance.rawDay))
                 isCompleted = true;
         }
         public void reset()
