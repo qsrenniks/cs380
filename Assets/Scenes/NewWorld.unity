@@ -132,7 +132,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1395192248, guid: 4d484893fae264f4fac554213fbdb074, type: 3}
       propertyPath: autoUpdate
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1637212425, guid: 4d484893fae264f4fac554213fbdb074, type: 3}
       propertyPath: m_LocalPosition.y
@@ -141,6 +141,10 @@ PrefabInstance:
     - target: {fileID: 5520605117869745959, guid: 4d484893fae264f4fac554213fbdb074, type: 3}
       propertyPath: m_Name
       value: Rain
+      objectReference: {fileID: 0}
+    - target: {fileID: 5520605117869745959, guid: 4d484893fae264f4fac554213fbdb074, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5520605117869745961, guid: 4d484893fae264f4fac554213fbdb074, type: 3}
       propertyPath: m_LocalPosition.x
@@ -235,15 +239,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09b136f905ad7524ab6605fe2a73b649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  masterIntensity: 1
-  rainIntensity: 1
-  windIntensity: 1
-  fogIntensity: 1
+  WCmasterIntensity: 0.311
+  WCrainIntensity: 0.512
+  WCsnowIntensity: 0
+  WCwindIntensity: 0
+  WCfogIntensity: 0
   currentWeather: 0
-  rainObject: {fileID: 5520605117869745959, guid: 4d484893fae264f4fac554213fbdb074, type: 3}
-  snowObject: {fileID: 6708431365547915879, guid: e9af06bc54a72ea4e8548977bd726e6b, type: 3}
-  rain: 1
-  snow: 0
+  rainObject: {fileID: 1108100413}
+  snowObject: {fileID: 1744204756}
+  autoUpdate: 1
 --- !u!4 &1547289502
 Transform:
   m_ObjectHideFlags: 0
@@ -368,7 +372,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1975253281, guid: e9af06bc54a72ea4e8548977bd726e6b, type: 3}
       propertyPath: autoUpdate
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3439004360774721077, guid: e9af06bc54a72ea4e8548977bd726e6b, type: 3}
       propertyPath: m_LocalPosition.y
