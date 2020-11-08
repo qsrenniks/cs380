@@ -4,50 +4,78 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    private static GameManager instance = null;
+
     public GameObject villageManagerPrefab;
     private VillageManager villageManager;
-    private Timer repopulateTimer;
+    private TimeManager.Timer repopulateTimer;
 
-    public class Timer
+    public static GameManager Instance
     {
-        public float timeRemaining = 0.0f;
-        public float initialTime = 0.0f;
-        public bool isRunning = true;
-
-        public Timer(float timeMax)
+        get
         {
-            timeRemaining = initialTime = timeMax;
-        }
-
-        public void Update()
-        {
-            if (timeRemaining > 0)
+            instance = FindObjectOfType<GameManager>();
+            if (instance == null)
             {
-                timeRemaining -= Time.deltaTime;
+                GameObject container = new GameObject("GameManager");
+                instance = container.AddComponent<GameManager>();
             }
-            if(timeRemaining < 0.0f)
-            {
-                timeRemaining = 0.0f;
-            }
+            return instance;
         }
+    }
 
-        public bool isDone()
+    public int calculateModifier(int stat)
+    {
+        switch (stat)
         {
-            if (timeRemaining == 0.0f)
-                return true;
-            else
-                return false;
+            case 1:
+                return -5;
+            case 2:
+                return -4;
+            case 3:
+                return -4;
+            case 4:
+                return -3;
+            case 5:
+                return -3;
+            case 6:
+                return -2;
+            case 7:
+                return -2;
+            case 8:
+                return -1;
+            case 9:
+                return -1;
+            case 10:
+                return 0;
+            case 11:
+                return 0;
+            case 12:
+                return 1;
+            case 13:
+                return 1;
+            case 14:
+                return 2;
+            case 15:
+                return 2;
+            case 16:
+                return 3;
+            case 17:
+                return 3;
+            case 18:
+                return 4;
+            case 19:
+                return 4;
+            case 20:
+                return 5;
         }
+        return -1;
+    }
 
-        public void reset()
-        {
-            timeRemaining = initialTime;
-        }
-
-        public void pause()
-        {
-            isRunning = !isRunning;
-        }
+    public bool DifficultyClassCheck(int DC, int MOD)
+    {
+        Debug.Log("Difficulty Check");
+        return DC <= Random.Range(1, 20) + MOD;
     }
 
     // Start is called before the first frame update
@@ -55,7 +83,7 @@ public class GameManager : MonoBehaviour
     {
         villageManager = Instantiate(villageManagerPrefab).GetComponent<VillageManager>();
         villageManager.CreateInitialPopulation();
-        repopulateTimer = new Timer(10.0f);
+        repopulateTimer = new TimeManager.Timer(10.0f);
     }
 
     // Update is called once per frame
