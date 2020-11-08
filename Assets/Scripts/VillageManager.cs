@@ -29,7 +29,7 @@ public class VillageManager : MonoBehaviour
 
     public float chanceOfDeathFunction(int age)
     {
-        return (float)(((0.26234567901) * age) + 14.0586419753);
+        return (float)((0.5f * age) * (0.5f * age));
     }
 
     private int statDistrobutionFunction()

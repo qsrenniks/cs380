@@ -87,6 +87,7 @@ public class VillagerBaseBehavior : MonoBehaviour
             float chanceOfDeath = VillageManager.Instance.chanceOfDeathFunction(age);
             if(chanceOfDeath >= Random.Range(0,100)) // villager dies
             {
+                partner.GetComponent<VillagerBaseBehavior>().partner = null;
                 VillageManager.Instance.population.Remove(gameObject);
                 Destroy(gameObject);
             }
