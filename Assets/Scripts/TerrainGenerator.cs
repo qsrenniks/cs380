@@ -1,28 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    public int pixWidth;
-    public int pixHeight;
+    public Tilemap grid;
+    public Tile test; 
+    public int pixWidth = 10;
+    public int pixHeight = 10;
 
     public float xOrg; 
     public float yOrg; 
 
     public float scale = 1.0f;
 
-    public Texture2D noiseTex;
     private Color[] pix;
-    private Renderer rend;
-    // Start is called before the first frame update
+
     void Start()
     {
-        rend = GetComponent<Renderer>();
-
-        noiseTex = new Texture2D(pixWidth, pixHeight);
-        pix = new Color[noiseTex.width * noiseTex.height];
-        rend.material.mainTexture = noiseTex;
+        pix = new Color[pixWidth * pixHeight];
     }
 
     void CalcNoise()
@@ -30,23 +27,34 @@ public class TerrainGenerator : MonoBehaviour
         // For each pixel in the texture...
         float y = 0.0F;
 
-        while (y < noiseTex.height)
+        while (y < pixWidth)
         {
             float x = 0.0F;
-            while (x < noiseTex.width)
+            while (x < pixHeight)
             {
-                float xCoord = xOrg + x / noiseTex.width * scale;
-                float yCoord = yOrg + y / noiseTex.height * scale;
+                float xCoord = xOrg + x / pixWidth * scale;
+                float yCoord = yOrg + y / pixHeight * scale;
                 float sample = Mathf.PerlinNoise(xCoord, yCoord);
-                pix[(int)y * noiseTex.width + (int)x] = new Color(sample, sample, sample);
+                pix[(int)y * pixWidth + (int)x] = new Color(sample, sample, sample);
                 x++;
             }
             y++;
         }
 
         // Copy the pixel data to the texture and load it into the GPU.
-        noiseTex.SetPixels(pix);
-        noiseTex.Apply();
+        //noiseTex.SetPixels(pix);
+        //noiseTex.Apply();
+
+        for(int i = 0; i < pixWidth; ++i)
+        {
+            for(int j = 0; j < pixHeight; ++j)
+            {
+                Vector3 start = new Vector3(0.0f, 0.0f, 0.0f);
+                start.x += i;
+                start.y += j;
+                grid.SetTile(grid.WorldToCell(start), test);
+            }
+        }
     }
 
     void Update()
