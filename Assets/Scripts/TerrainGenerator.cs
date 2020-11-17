@@ -16,6 +16,8 @@ public class TerrainGenerator : MonoBehaviour
   public float yOrg;
 
   public float scale = 1.0f;
+  public float waterLevel = 0.5f;
+  public float rockLevel = 0.9f;
 
   private Color[] pix;
 
@@ -54,13 +56,18 @@ public class TerrainGenerator : MonoBehaviour
         Vector3 start = new Vector3(0.0f, 0.0f, 0.0f);
         start.x += i;
         start.y += j;
-        if (pix[i * pixWidth + j].r < 0.5f)
+        float r = pix[i * pixWidth + j].r;
+        if (r < waterLevel)
         {
           grid.SetTile(grid.WorldToCell(start), water);
         }
+        else if (r >= waterLevel && r < rockLevel)
+        {
+          grid.SetTile(grid.WorldToCell(start), land);
+        }
         else
         { 
-          grid.SetTile(grid.WorldToCell(start), land);
+          grid.SetTile(grid.WorldToCell(start), rock);
         }
       }
     }

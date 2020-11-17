@@ -201,11 +201,13 @@ MonoBehaviour:
   water: {fileID: 11400000, guid: 2181e2e7ddafe5944a0cf6f8094b4267, type: 2}
   land: {fileID: 11400000, guid: b88db0d77aa62ad49a1e5809ef0a4f54, type: 2}
   rock: {fileID: 11400000, guid: ce818178c9ce4c14184e772c6a99d600, type: 2}
-  pixWidth: 10
-  pixHeight: 10
+  pixWidth: 100
+  pixHeight: 100
   xOrg: 0
   yOrg: 0
-  scale: 1
+  scale: 5
+  waterLevel: 0.37
+  rockLevel: 0.6
 --- !u!156049354 &531820402
 Grid:
   m_ObjectHideFlags: 0
