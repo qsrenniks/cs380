@@ -179,7 +179,7 @@ GameObject:
   - component: {fileID: 531820402}
   - component: {fileID: 531820401}
   m_Layer: 0
-  m_Name: Grid
+  m_Name: TerrainGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -198,7 +198,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 1161653992}
-  test: {fileID: 11400000, guid: 2181e2e7ddafe5944a0cf6f8094b4267, type: 2}
+  water: {fileID: 11400000, guid: 2181e2e7ddafe5944a0cf6f8094b4267, type: 2}
+  land: {fileID: 11400000, guid: b88db0d77aa62ad49a1e5809ef0a4f54, type: 2}
+  rock: {fileID: 11400000, guid: ce818178c9ce4c14184e772c6a99d600, type: 2}
   pixWidth: 10
   pixHeight: 10
   xOrg: 0
