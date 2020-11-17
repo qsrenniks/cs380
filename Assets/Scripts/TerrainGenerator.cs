@@ -26,6 +26,36 @@ public class TerrainGenerator : MonoBehaviour
     pix = new Color[pixWidth * pixHeight];
   }
 
+  bool isWater(int x, int y)
+  {
+    float r = pix[x * pixWidth + y].r;
+    if (r < waterLevel)
+    {
+      return true;
+    }
+    return false;
+  }
+
+  bool isLand(int x, int y)
+  {
+    float r = pix[x * pixWidth + y].r;
+    if (r >= waterLevel && r < rockLevel)
+    {
+      return true;
+    }
+    return false;
+  }
+
+  bool isRock(int x, int y)
+  {
+    float r = pix[x * pixWidth + y].r;
+    if (r >= rockLevel)
+    {
+      return true;
+    }
+    return false;
+  }
+
   void CalcNoise()
   {
     // For each pixel in the texture...
@@ -56,17 +86,17 @@ public class TerrainGenerator : MonoBehaviour
         Vector3 start = new Vector3(0.0f, 0.0f, 0.0f);
         start.x += i;
         start.y += j;
-        float r = pix[i * pixWidth + j].r;
-        if (r < waterLevel)
-        {
+
+        if (isWater(i, j))
+        { 
           grid.SetTile(grid.WorldToCell(start), water);
         }
-        else if (r >= waterLevel && r < rockLevel)
+        else if (isLand(i, j))
         {
           grid.SetTile(grid.WorldToCell(start), land);
         }
-        else
-        { 
+        else if(isRock(i, j))
+        {
           grid.SetTile(grid.WorldToCell(start), rock);
         }
       }
