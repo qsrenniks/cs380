@@ -6,9 +6,7 @@ using UnityEngine.Tilemaps;
 public class TerrainGenerator : MonoBehaviour
 {
   public Tilemap grid;
-  public Tile water;
-  public Tile land;
-  public Tile rock;
+  public Tile white;
   public int pixWidth = 10;
   public int pixHeight = 10;
 
@@ -18,6 +16,10 @@ public class TerrainGenerator : MonoBehaviour
   public float scale = 1.0f;
   public float waterLevel = 0.5f;
   public float rockLevel = 0.9f;
+
+  public Color rockColor;
+  public Color landColor;
+  public Color waterColor;
 
   private Color[] pix;
 
@@ -89,15 +91,21 @@ public class TerrainGenerator : MonoBehaviour
 
         if (isWater(i, j))
         { 
-          grid.SetTile(grid.WorldToCell(start), water);
+          grid.SetTile(grid.WorldToCell(start), white);
+          grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
+          grid.SetColor(grid.WorldToCell(start), waterColor);
         }
         else if (isLand(i, j))
         {
-          grid.SetTile(grid.WorldToCell(start), land);
+          grid.SetTile(grid.WorldToCell(start), white);
+          grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
+          grid.SetColor(grid.WorldToCell(start), landColor);
         }
         else if(isRock(i, j))
         {
-          grid.SetTile(grid.WorldToCell(start), rock);
+          grid.SetTile(grid.WorldToCell(start), white);
+          grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
+          grid.SetColor(grid.WorldToCell(start), rockColor);
         }
       }
     }
