@@ -90,16 +90,20 @@ public class TerrainGenerator : MonoBehaviour
         start.y += j;
 
         if (isWater(i, j))
-        { 
+        {
+          float val = pix[i * pixWidth + j].r;
+          Color finalColor = Color.Lerp(waterColor, landColor, (val - 0.0f) / (waterLevel - 0.0f));
           grid.SetTile(grid.WorldToCell(start), white);
           grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
-          grid.SetColor(grid.WorldToCell(start), waterColor);
+          grid.SetColor(grid.WorldToCell(start), finalColor);
         }
         else if (isLand(i, j))
         {
+          float val = pix[i * pixWidth + j].r;
+          Color finalColor = Color.Lerp(landColor, rockColor, (val - waterLevel) / (rockLevel - waterLevel));
           grid.SetTile(grid.WorldToCell(start), white);
           grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
-          grid.SetColor(grid.WorldToCell(start), landColor);
+          grid.SetColor(grid.WorldToCell(start), finalColor);
         }
         else if(isRock(i, j))
         {
