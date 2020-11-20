@@ -15,7 +15,7 @@ public class RainController : MonoBehaviour
      float fogIntensity = 1f;
     [Range(0, 1f)]
     float lightningIntensity = 1f;
-    public bool autoUpdate;
+    public bool autoUpdate = true;
 
     public ParticleSystem rainPart;
     public ParticleSystem windPart;
@@ -32,6 +32,7 @@ public class RainController : MonoBehaviour
 
     void Awake()
     {
+        autoUpdate = true;
         rainEmission = rainPart.emission;
         rainForce = rainPart.forceOverLifetime;
         windEmission = windPart.emission;
