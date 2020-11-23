@@ -38,6 +38,7 @@ public class WeatherController : MonoBehaviour
 
     public bool autoUpdate = false;
 
+    bool changeWeather = false;
 
     void Start()
     {
@@ -58,7 +59,7 @@ public class WeatherController : MonoBehaviour
         WeatherType[2] = .2; //fog
         WeatherType[3] = .1; //wind + fog
 
-        weather newState = Choice(weatherArray, WeatherMatrix[0]);
+        currentWeather = Choice(weatherArray, WeatherMatrix[0]);
 
         RC = rainObject.GetComponent<RainController>();
         SC = snowObject.GetComponent<SnowController>();
@@ -67,17 +68,52 @@ public class WeatherController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(autoUpdate)
+        if(changeWeather || autoUpdate)
         {
+            if(changeWeather)
+            {
+                if(currentWeather == weather.clear)
+                {
+                    currentWeather = Choice(weatherArray, WeatherMatrix[0]);
+                    //change values
+                }
+                else if (currentWeather == weather.rain)
+                {
+                    currentWeather = Choice(weatherArray, WeatherMatrix[1]);
+                    //change values
+                }
+                else if (currentWeather == weather.snow)
+                {
+                    currentWeather = Choice(weatherArray, WeatherMatrix[2]);
+                    //change values
+                }
+                changeWeather = false;
+            }
+
+            //set values
             RC.OnMasterChanged(WCmasterIntensity);
             SC.OnMasterChanged(WCmasterIntensity);
             RC.OnRainChanged(WCrainIntensity);
             SC.OnSnowChanged(WCsnowIntensity);
             RC.OnWindChanged(WCwindIntensity);
             RC.OnFogChanged(WCfogIntensity);
+            
         }
+    }
 
+    public void ChangeWeather()
+    {
+        changeWeather = true;
+    }
 
+    public weather getCurrentWeather()
+    {
+        return currentWeather;
+    }
+
+    public secondWeather getSecondWeather()
+    {
+        return currentSecondW;
     }
 
     static readonly ThreadLocal<System.Random> _random = new ThreadLocal<System.Random>(() => new System.Random());
