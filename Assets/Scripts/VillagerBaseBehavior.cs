@@ -6,8 +6,8 @@ public class VillagerBaseBehavior : MonoBehaviour
 {
     public int[] statArray;
     public int[] statModArray;
-    public int primaryRace = -1;
-    public int secondaryRace = -1;
+    public E_RACE primaryRace = E_RACE.HUMAN;
+    public E_RACE secondaryRace = E_RACE.HUMAN;
     public int generation = 0;
     public GameObject partner = null;
     public bool canMakeChildren = false;
@@ -15,6 +15,8 @@ public class VillagerBaseBehavior : MonoBehaviour
     public enum E_RACE { HUMAN = 0, ELF, DWARF, GNOME, HALFLING, TIEFLING, GOBLIN, COUNT};
     public int[] dateOfBirth; // month, day, year
     public TimeManager.GameTimer reproductionCooldown;
+    public int currentDay = 0;
+    public bool hasAction = true;
 
     public int getAge()
     {
@@ -79,10 +81,23 @@ public class VillagerBaseBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(currentDay < TimeManager.Instance.rawDay)
+            hasAction = true;
+
         int age = getAge();
-        if (age > 18 && reproductionCooldown.isCompleted == true)
-            canMakeChildren = true;
-        if(age >= 55) // old age check
+        if (hasAction)
+        {
+            // reproduction action
+            if (age >= 18 && reproductionCooldown.isCompleted == true)
+            {
+                GameObject newVillager = Instantiate(VillageManager.Instance.villagerPrefab);
+                MakeChild(5, newVillager);
+                reproductionCooldown.reset();
+                hasAction = false;
+            }
+        }
+
+        if (age >= 55) // old age check
         {
             float chanceOfDeath = VillageManager.Instance.chanceOfDeathFunction(age);
             if(chanceOfDeath >= Random.Range(0,100)) // villager dies

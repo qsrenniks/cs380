@@ -47,4 +47,9 @@ MonoBehaviour:
   statModArray: 
   primaryRace: -1
   secondaryRace: -1
+  generation: 0
   partner: {fileID: 0}
+  canMakeChildren: 0
+  dateOfBirth: 
+  currentDay: 0
+  hasAction: 1

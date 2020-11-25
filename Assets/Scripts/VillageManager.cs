@@ -12,6 +12,8 @@ public class VillageManager : MonoBehaviour
     public List<GameObject> population;
     public GameObject villagerPrefab;
     public int mutationRate;
+    public enum E_JOB {WOODCUTTER = 0, MINER, FOODGATHER, WATERCOLLECT, COUNT}
+    public int[] jobCounter;
 
     public static VillageManager Instance
     {
@@ -136,7 +138,10 @@ public class VillageManager : MonoBehaviour
             }
         }
     }
-
+    void Awake()
+    {
+        jobCounter = new int[] { 0, 0, 0 };
+    }
     // Start is called before the first frame update
     void Start()
     {
