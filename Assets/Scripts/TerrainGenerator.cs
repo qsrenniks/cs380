@@ -41,8 +41,8 @@ public class TerrainGenerator : MonoBehaviour
 
   private Color[] pix;
 
-  public Layer populace = new Layer();
-  public Layer buildings = new Layer();
+  public Layer populaceLayer = new Layer();
+  public Layer buildingsLayer = new Layer();
 
   void Start()
   {
