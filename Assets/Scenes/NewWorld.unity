@@ -209,14 +209,14 @@ MonoBehaviour:
   rockColor: {r: 0.49803925, g: 0.5019608, b: 0.49803925, a: 1}
   landColor: {r: 0.73333335, g: 0.4784314, b: 0.34509805, a: 1}
   waterColor: {r: 0, g: 0.63529414, b: 0.9058824, a: 1}
-  populace:
+  populaceLayer:
     grid: {fileID: 1269824056}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
-    layerColor: {r: 1, g: 1, b: 1, a: 0}
-  buildings:
+    layerColor: {r: 1, g: 1, b: 1, a: 1}
+  buildingsLayer:
     grid: {fileID: 1662453734}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
-    layerColor: {r: 0.6981132, g: 0.38555354, b: 0.13501245, a: 0}
+    layerColor: {r: 1, g: 0.34082562, b: 0, a: 1}
 --- !u!156049354 &531820402
 Grid:
   m_ObjectHideFlags: 0
