@@ -5,15 +5,15 @@ using UnityEngine;
 public class SnowController : MonoBehaviour
 {
     [Range(0, 1f)]
-    public float masterIntensity = 1f;
+    float masterIntensity = 0f;
     [Range(0, 1f)]
-    public float snowIntensity = 1f;
+    float snowIntensity = 0f;
     [Range(0, 1f)]
-    public float windIntensity = 1f;
+    float windIntensity = 0f;
     [Range(0, 1f)]
-    public float fogIntensity = 1f;
+    float fogIntensity = 0f;
     [Range(0, 7f)]
-    public float snowLevel;
+    float snowLevel;
     public bool autoUpdate = true;
 
     public ParticleSystem snowPart;
@@ -34,6 +34,7 @@ public class SnowController : MonoBehaviour
 
     void Awake()
     {
+        autoUpdate = true;
         snowTransform = snowPart.transform;
         snowEmission = snowPart.emission;
         snowShape = snowPart.shape;

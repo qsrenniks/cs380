@@ -47,7 +47,7 @@ public class TerrainGenerator : MonoBehaviour
   void Start()
   {
     pix = new Color[pixWidth * pixHeight];
-    //populace.setTileIntensity(10, 10, 1.0f);
+    //populaceLayer.setTileIntensity(10, 10, 1.0f);
   }
 
   bool isWater(int x, int y)
