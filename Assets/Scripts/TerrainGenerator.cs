@@ -3,6 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+[System.Serializable]
+public class Layer
+{
+  public Tilemap grid;
+  public Tile white;
+  public Color layerColor;
+
+  public void setTileIntensity(int x, int y, float intensity)
+  {
+    Vector3 start = new Vector3(0.0f, 0.0f, 0.0f);
+    start.x += x;
+    start.y += y;
+    grid.SetTile(grid.WorldToCell(start), white);
+    grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
+    grid.SetColor(grid.WorldToCell(start), layerColor * intensity);
+  }
+}
+
 public class TerrainGenerator : MonoBehaviour
 {
   public Tilemap grid;
@@ -23,9 +41,13 @@ public class TerrainGenerator : MonoBehaviour
 
   private Color[] pix;
 
+  public Layer populace = new Layer();
+  public Layer buildings = new Layer();
+
   void Start()
   {
     pix = new Color[pixWidth * pixHeight];
+    //populace.setTileIntensity(10, 10, 1.0f);
   }
 
   bool isWater(int x, int y)
