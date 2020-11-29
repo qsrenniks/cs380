@@ -267,6 +267,8 @@ MonoBehaviour:
   rockColor: {r: 0.49803925, g: 0.5019608, b: 0.49803925, a: 1}
   landColor: {r: 0.73333335, g: 0.4784314, b: 0.34509805, a: 1}
   waterColor: {r: 0, g: 0.63529414, b: 0.9058824, a: 1}
+  weatherManager: {fileID: 1547289500}
+  cameraObject: {fileID: 1642662053}
   populaceLayer:
     grid: {fileID: 1269824056}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}

@@ -39,6 +39,9 @@ public class TerrainGenerator : MonoBehaviour
   public Color landColor;
   public Color waterColor;
 
+  public GameObject weatherManager;
+  public GameObject cameraObject;
+
   private float[] pix;
 
   public Layer populaceLayer = new Layer();
@@ -72,6 +75,9 @@ public class TerrainGenerator : MonoBehaviour
   void Start()
   {
     pix = new float[mapSize * mapSize];
+    cameraObject.transform.position = new Vector3((float)mapSize / 2.0f, (float)mapSize / 2.0f, -10.0f);
+    Camera a = cameraObject.GetComponent(typeof(Camera)) as Camera;
+    a.orthographicSize = ((float)mapSize / 2.0f) + 15.0f;
     //populaceLayer.setTileIntensity(10, 10, 1.0f);
     CalcNoise();
     Initialize(false);
@@ -128,7 +134,19 @@ public class TerrainGenerator : MonoBehaviour
 
   void Update()
   {
-    Erode(10);
+    WeatherController weatherController = weatherManager.GetComponent(typeof(WeatherController)) as WeatherController;
+    WeatherController.weather cW = weatherController.getCurrentWeather();
+    if(cW == WeatherController.weather.rain)
+    {
+      Erode(10);
+    }
+    else if(cW == WeatherController.weather.clear)
+    {
+    }
+    else if(cW == WeatherController.weather.snow)
+    {
+    }
+
 
     for (int i = 0; i < mapSize; ++i)
     {
