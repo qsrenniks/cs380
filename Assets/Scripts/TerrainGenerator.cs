@@ -25,8 +25,7 @@ public class TerrainGenerator : MonoBehaviour
 {
   public Tilemap grid;
   public Tile white;
-  public int pixWidth = 10;
-  public int pixHeight = 10;
+  public int mapSize = 10;
 
   public float xOrg;
   public float yOrg;
@@ -45,15 +44,42 @@ public class TerrainGenerator : MonoBehaviour
   public Layer populaceLayer = new Layer();
   public Layer buildingsLayer = new Layer();
 
+  public int dropletDensity = 10; // every step in a direction knocks one off this list until the rain drop settles
+  public float maxSedimentPickup = 0.5f;
+  public float minSedimentPickup = 0.01f;
+  public int seed;
+  public int erosionRadius = 3;
+  public float startSpeed = 1.0f;
+  public float startDropletVolume = 1.0f;
+  public int maxDropletLifetime = 30;
+  public float inertia = 0.05f;
+  public float sedimentCapacityCoeff = 4.0f;
+  public float minSedimentCapacity = 0.01f;
+  public float gravity = 4.0f;
+  public float evaporationSpeed = 0.01f;
+  public float depositSpeed = 0.3f;
+  public float erodeSpeed = 0.3f;
+
+  //this is the erosion layer of the map that helps tell each node how they should evenly pull and place sediment
+  int [][] erosionIndices;
+  float [][] erosionWeights;
+
+  System.Random rand;
+  int currentSeed;
+  int currentErosionRadius;
+  int currentMapSize;
+
   void Start()
   {
-    pix = new float[pixWidth * pixHeight];
+    pix = new float[mapSize * mapSize];
     //populaceLayer.setTileIntensity(10, 10, 1.0f);
+    CalcNoise();
+    Initialize(false);
   }
 
   bool isWater(int x, int y)
   {
-    float r = pix[x * pixWidth + y];
+    float r = pix[x * mapSize + y];
     if (r < waterLevel)
     {
       return true;
@@ -63,7 +89,7 @@ public class TerrainGenerator : MonoBehaviour
 
   bool isLand(int x, int y)
   {
-    float r = pix[x * pixWidth + y];
+    float r = pix[x * mapSize + y];
     if (r >= waterLevel && r < rockLevel)
     {
       return true;
@@ -73,7 +99,7 @@ public class TerrainGenerator : MonoBehaviour
 
   bool isRock(int x, int y)
   {
-    float r = pix[x * pixWidth + y];
+    float r = pix[x * mapSize + y];
     if (r >= rockLevel)
     {
       return true;
@@ -85,27 +111,28 @@ public class TerrainGenerator : MonoBehaviour
   {
     // For each pixel in the texture...
 
-    for(int y = 0; y < pixHeight; ++y)
+    for(int y = 0; y < mapSize; ++y)
     {
-      for(int x = 0; x < pixWidth; ++x)
+      for(int x = 0; x < mapSize; ++x)
       {
-        float xCoord = ((float)(x) / (float)(pixWidth)) * scale;
-        float yCoord = ((float)(y) / (float)(pixHeight)) * scale;
+        float xCoord = (((float)(x) / (float)(mapSize))) * scale;
+        float yCoord = (((float)(y) / (float)(mapSize))) * scale;
 
         float final = Mathf.PerlinNoise(xCoord, yCoord) 
-                    + 0.5f * Mathf.PerlinNoise(2.0f * xCoord, 2.0f * yCoord)
-                    + 0.25f * Mathf.PerlinNoise(4.0f * xCoord, 4.0f * yCoord);
-        pix[x * pixWidth + y] = Mathf.Pow(final, power);
+        + 0.5f * Mathf.PerlinNoise(2.0f * xCoord, 2.0f * yCoord)
+        + 0.25f * Mathf.PerlinNoise(4.0f * xCoord, 4.0f * yCoord);
+        pix[x * mapSize + y] = 1.0f - Mathf.Pow(final, power);
       }
     }
+  }
 
-    // Copy the pixel data to the texture and load it into the GPU.
-    //noiseTex.SetPixels(pix);
-    //noiseTex.Apply();
+  void Update()
+  {
+    Erode(10);
 
-    for (int i = 0; i < pixWidth; ++i)
+    for (int i = 0; i < mapSize; ++i)
     {
-      for (int j = 0; j < pixHeight; ++j)
+      for (int j = 0; j < mapSize; ++j)
       {
         Vector3 start = new Vector3(0.0f, 0.0f, 0.0f);
         start.x += i;
@@ -113,7 +140,7 @@ public class TerrainGenerator : MonoBehaviour
 
         if (isWater(i, j))
         {
-          float val = pix[i * pixWidth + j];
+          float val = pix[i * mapSize + j];
           Color finalColor = Color.Lerp(waterColor, landColor, (val - 0.0f) / (waterLevel - 0.0f));
           grid.SetTile(grid.WorldToCell(start), white);
           grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
@@ -121,7 +148,7 @@ public class TerrainGenerator : MonoBehaviour
         }
         else if (isLand(i, j))
         {
-          float val = pix[i * pixWidth + j];
+          float val = pix[i * mapSize + j];
           Color finalColor = Color.Lerp(landColor, rockColor, (val - waterLevel) / (rockLevel - waterLevel));
           grid.SetTile(grid.WorldToCell(start), white);
           grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
@@ -137,50 +164,194 @@ public class TerrainGenerator : MonoBehaviour
     }
   }
 
-  void Update()
+  void Initialize(bool setSeed)
   {
-    CalcNoise();
+    //initializes the seed for the raindrop generator, if its different it resets the seed
+    if(setSeed || rand == null || currentSeed != seed)
+    {
+      rand = new System.Random(seed);
+      currentSeed = seed;
+    }
+
+    //if the map has changed or the indices arent setup we need to set them up
+    // this method of erosion distributes the sediment collection evenly around the rain drop
+    // this prevents the raindrop from digging craters where it travels
+    if(erosionIndices == null || currentErosionRadius != erosionRadius || currentMapSize != mapSize)
+    {
+      InitializeIndices(erosionRadius);
+      currentErosionRadius = erosionRadius;
+      currentMapSize = mapSize;
+    }
   }
 
-  public int dropletDensity = 10; // every step in a direction knocks one off this list until the rain drop settles
-  public float maxSedimentPickup = 0.5f;
-  public float minSedimentPickup = 0.01f;
-
-  System.Random prng;
-  void Erode()
+  void Erode(int numberOfRaindrops, bool resetSeed = false)
   {
-    for(uint i = 0; i < 100; ++i)
-    {
-      int x = prng.Next(0, pixWidth - 1);
-      int y = prng.Next(0, pixHeight - 1);
-      int currentLife = dropletDensity;
-      float currentSedimentPickup = 0.0f;
 
-      while(currentLife > 0)
+
+    for(uint i = 0; i < numberOfRaindrops; ++i)
+    {
+      float x = rand.Next(0, mapSize - 1);
+      float y = rand.Next(0, mapSize - 1);
+      float dirX = 0.0f;
+      float dirY = 0.0f;
+      float speed = startSpeed;
+      float water = startDropletVolume;
+      float sediment = 0.0f;
+
+      for(int lifetime = 0; lifetime < maxDropletLifetime; ++lifetime)
       {
-        //from neighbors determine the lowest level to travel to
-        int nextX = x;
-        int nextY = y;
-        //move x and y to that level and verify it is valid position
-        if(nextX >= pixWidth || nextY >= pixHeight)
+        int xGridIndex = (int)x;
+        int yGridIndex = (int)y;
+        int dropletIndex = yGridIndex * mapSize + xGridIndex;
+
+        float cellOffsetX = x - xGridIndex;
+        float cellOffsetY = y - yGridIndex;
+
+        Gradient grad = CalculateGradient(x, y);
+        dirX = (dirX * inertia - grad.gradX * (1.0f - inertia));
+        dirY = (dirY * inertia - grad.gradY * (1.0f - inertia));
+
+        float len = Mathf.Sqrt(dirX * dirX + dirY * dirY); // this is a much easier way of determining where to go next then creating neighbor lists and determining heights and then returning the next index to go down
+
+        if (len != 0)
         {
-          break;
+          dirX /= len;
+          dirY /= len;
         }
-        //if sediment max is reached or did not move from previous position
-        if(currentSedimentPickup >= maxSedimentPickup)
+        x += dirX;
+        y += dirY;
+
+        if((dirX == 0 && dirY == 0) || x < 0 || x >= mapSize -1 || y < 0 || y >= mapSize - 1) //makes sure the pos doesnt fall off the map
         {
-          pix[x * pixWidth + y] += currentSedimentPickup; // distributed directly to the tile
+          break; // if the raindrop does fall off we break out of that droplets sim
         }
-        //else gather sediment affecting the height of the map from previous position
-        else
+
+        float newHeight = CalculateGradient(x, y).height; // calculate height at new location to pull sediment from
+        float delta = newHeight - grad.height; // difference from current to new node
+
+        float sedimentCapacity = Mathf.Max(-delta * speed * water * sedimentCapacityCoeff, minSedimentCapacity);
+
+        if(sediment > sedimentCapacity || delta > 0.0f)
         {
-          float sedimentPickup = Random.Range(minSedimentPickup, maxSedimentPickup);
-          float delta = pix[x * pixWidth * y] - sedimentPickup;
-          currentSedimentPickup += sedimentPickup;
-          pix[x * pixWidth * y] = delta;
+          float depositAmount = (delta > 0) ? Mathf.Min(delta, sediment) : (sediment - sedimentCapacity) * depositSpeed;
+          sediment -= depositAmount;
+
+          pix[dropletIndex] += depositAmount * (1.0f - cellOffsetX) * (1.0f - cellOffsetY);
+          pix[dropletIndex + 1] += depositAmount * cellOffsetX * (1.0f - cellOffsetY);
+          pix[dropletIndex + mapSize] += depositAmount * (1.0f - cellOffsetX) * cellOffsetY;
+          pix[dropletIndex + mapSize + 1] += depositAmount * cellOffsetX * cellOffsetY;
         }
-        --currentLife;
+        else 
+        {
+          float erodeAmount = Mathf.Min((sedimentCapacity - sediment) * erodeSpeed);
+
+          for (int j = 0; j < erosionIndices[dropletIndex].Length; ++j) //run through indices eroding from the radius from the droplet
+          {
+            int index = erosionIndices[dropletIndex][j];
+            float erode = erodeAmount * erosionWeights[dropletIndex][j];
+            float erodeDelta = (pix[index] < erode) ? pix[index] : erode;
+            pix[index] -= erodeDelta;
+            sediment += erodeDelta;
+          }
+        }
+
+        speed = Mathf.Sqrt(speed * speed + delta * gravity);
+        water *= (1.0f - evaporationSpeed); // evaporate water volume from droplet
       }
     }
+  }
+
+  Gradient CalculateGradient(float posX, float posY)
+  {
+    int coordX = (int)posX;
+    int coordY = (int)posY;
+
+    float x = posX - coordX;
+    float y = posY - coordY;
+
+    int index = coordY * mapSize + coordX;
+    float heightNW = pix[index];
+    float heightNE = pix[index + 1];
+    float heightSW = pix[index + mapSize];
+    float heightSE = pix[index + mapSize + 1];
+
+    float gradientX = (heightNE - heightNW) * (1-y) + (heightSE - heightSW) * y;
+    float gradientY = (heightSW - heightNW) * (1-x) + (heightSE - heightNE) * x;
+
+    //uses bilinear interpolation on the cell and the surrounding cell
+    float height = heightNW * (1 - x) * (1 - y) + heightNE * x * (1 - y) + heightSW * (1 - x) * y + heightSE * x * y;
+
+    Gradient grad = new Gradient();
+    grad.height = height;
+    grad.gradX = gradientX;
+    grad.gradY = gradientY;
+    return grad;
+  }
+
+  void InitializeIndices(int eRadius)
+  {
+    erosionIndices = new int[mapSize * mapSize][];
+    erosionWeights = new float[mapSize * mapSize][];
+
+    //4 offsets around a cell
+    int[] xOffset = new int[eRadius * eRadius * 4];
+    int[] yOffset = new int[eRadius * eRadius * 4];
+
+    float[] weights = new float[eRadius * eRadius * 4];
+
+    float weightSum = 0;
+    int addIndex = 0;
+
+    for(int i = 0; i < erosionIndices.GetLength(0); ++i)
+    {
+      int xIndex = i % mapSize;
+      int yIndex = i / mapSize;
+
+      if(yIndex <= eRadius || yIndex >= mapSize - eRadius || xIndex <= eRadius + 1 || xIndex >= mapSize - eRadius)
+      {
+        weightSum = 0;
+        addIndex = 0;
+
+        for (int y = -eRadius; y <= eRadius; ++y)
+        {
+          for(int x = -eRadius; x <= eRadius; ++x)
+          {
+            float sqrDist = x * x + y * y;
+            if(sqrDist < eRadius * eRadius)
+            {
+              int xc = xIndex + x;
+              int yc = yIndex + y;
+
+              if(xc >= 0 && xc < mapSize && yc >= 0 && yc < mapSize)
+              {
+                float weight = 1.0f - Mathf.Sqrt(sqrDist) / eRadius;
+                weightSum += weight;
+                weights[addIndex] = weight;
+                xOffset[addIndex] = x;
+                yOffset[addIndex] = y;
+                ++addIndex;
+              }
+            }
+          }
+        }
+      }
+
+      int numEntries = addIndex; //num of neighbors for each node
+      erosionIndices[i] = new int[numEntries];
+      erosionWeights[i] = new float[numEntries];
+
+      for(int j = 0; j < numEntries; ++j)
+      {
+        erosionIndices[i][j] = (yOffset[j] + yIndex) * mapSize + xOffset[j] + xIndex;
+        erosionWeights[i][j] = weights[j] / weightSum;
+      }
+    }
+  }
+
+  struct Gradient
+  {
+    public float height;
+    public float gradX;
+    public float gradY;
   }
 }

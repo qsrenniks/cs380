@@ -257,8 +257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 1161653992}
   white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
-  pixWidth: 100
-  pixHeight: 100
+  mapSize: 100
   xOrg: 0
   yOrg: 0
   scale: 2.8
@@ -279,6 +278,18 @@ MonoBehaviour:
   dropletDensity: 10
   maxSedimentPickup: 0.5
   minSedimentPickup: 0.01
+  seed: 0
+  erosionRadius: 3
+  startSpeed: 1
+  startDropletVolume: 1
+  maxDropletLifetime: 30
+  inertia: 0.05
+  sedimentCapacityCoeff: 4
+  minSedimentCapacity: 0.01
+  gravity: 4
+  evaporationSpeed: 0.01
+  depositSpeed: 0.3
+  erodeSpeed: 0.3
 --- !u!156049354 &531820402
 Grid:
   m_ObjectHideFlags: 0
