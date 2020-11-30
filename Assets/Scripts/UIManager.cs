@@ -28,23 +28,23 @@ public class UIManager : MonoBehaviour
     public void ChangeType(int t)
     {
         type = t;
-        if (type == 0) // Weather
+        if (type == 0) // terrain
         {
-            WeatherSliders.SetActive(true);
-            TerrianSliders.SetActive(false);
-            TerrianSliders.SetActive(false);
+            //WeatherSliders.SetActive(true);
+            TerrianSliders.SetActive(true);
+            VillageSliders.SetActive(false);
         }
         else if (type == 1) // Terrian
         {
-            WeatherSliders.SetActive(false);
-            TerrianSliders.SetActive(true);
+            //WeatherSliders.SetActive(false);
             TerrianSliders.SetActive(false);
+            VillageSliders.SetActive(true);
         }
-        else if (type == 2) // Village
-        {
-            WeatherSliders.SetActive(false);
-            TerrianSliders.SetActive(false);
-            TerrianSliders.SetActive(true);
-        }
+       // else if (type == 2) // Village
+       // {
+       //    // WeatherSliders.SetActive(false);
+       //     TerrianSliders.SetActive(false);
+       //     TerrianSliders.SetActive(true);
+        //}
     }
 }
