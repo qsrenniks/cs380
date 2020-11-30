@@ -19,7 +19,7 @@ public class WeatherController : MonoBehaviour
     [Range(0, 1f)]
     public float WCfogIntensity = 1f;
 
-    public Vector3 clearTo = new Vector3( 0.6f, 0.2f, 0.2f );
+    public Vector3 clearTo = new Vector3( 0.3f, 0.4f, 0.3f );
     public Vector3 rainTo = new Vector3(0.4f, 0.4f, 0.2f);
     public Vector3 snowTo = new Vector3(0.2f, 0.5f, 0.3f);
 
@@ -63,8 +63,6 @@ public class WeatherController : MonoBehaviour
         WeatherType[2] = .2; //fog
         WeatherType[3] = .1; //wind + fog
 
-        currentWeather = Choice(weatherArray, WeatherMatrix[0]);
-
         RC = rainObject.GetComponent<RainController>();
         SC = snowObject.GetComponent<SnowController>();
     }
@@ -81,52 +79,19 @@ public class WeatherController : MonoBehaviour
                 {
                     currentWeather = Choice(weatherArray, WeatherMatrix[0]);
                     //change values
-                    if (currentWeather == weather.rain)
-                    {
-                        WCmasterIntensity = 1.0f;
-                        WCrainIntensity = 1.0f;
-                        WCsnowIntensity = 0.0f;
-                    }
-                    else if (currentWeather == weather.snow)
-                    {
-                        WCmasterIntensity = 1.0f;
-                        WCrainIntensity = 0.0f;
-                        WCsnowIntensity = 1.0f;
-                    }
+                    updateIntensity(currentWeather);
                 }
                 else if (currentWeather == weather.rain)
                 {
                     currentWeather = Choice(weatherArray, WeatherMatrix[1]);
                     //change values
-                    if (currentWeather == weather.clear)
-                    {
-                        WCmasterIntensity = 0.0f;
-                        WCrainIntensity = 0.0f;
-                        WCsnowIntensity = 0.0f;
-                    }
-                    else if (currentWeather == weather.snow)
-                    {
-                        WCmasterIntensity = 1.0f;
-                        WCrainIntensity = 0.0f;
-                        WCsnowIntensity = 1.0f;
-                    }
+                    updateIntensity(currentWeather);
                 }
                 else if (currentWeather == weather.snow)
                 {
                     currentWeather = Choice(weatherArray, WeatherMatrix[2]);
                     //change values
-                    if (currentWeather == weather.clear)
-                    {
-                        WCmasterIntensity = 0.0f;
-                        WCrainIntensity = 0.0f;
-                        WCsnowIntensity = 0.0f;
-                    }
-                    else if (currentWeather == weather.rain)
-                    {
-                        WCmasterIntensity = 1.0f;
-                        WCrainIntensity = 1.0f;
-                        WCsnowIntensity = 0.0f;
-                    }
+                    updateIntensity(currentWeather);
                 }
                 changeWeather = false;
             }
@@ -154,6 +119,29 @@ public class WeatherController : MonoBehaviour
         WeatherMatrix[2][1] = snowTo.y;
         WeatherMatrix[2][2] = snowTo.z;
     }
+
+    private void updateIntensity(weather newWeather)
+    {
+        if(newWeather == weather.clear)
+        {
+            WCmasterIntensity = 0.0f;
+            WCrainIntensity = 0.0f;
+            WCsnowIntensity = 0.0f;
+        }
+        else if(newWeather == weather.rain)
+        {
+            WCmasterIntensity = 1.0f;
+            WCrainIntensity = 1.0f;
+            WCsnowIntensity = 0.0f;
+        }
+        else if(newWeather == weather.snow)
+        {
+            WCmasterIntensity = 1.0f;
+            WCrainIntensity = 0.0f;
+            WCsnowIntensity = 1.0f;
+        }
+    }
+
     public void ChangeWeather()
     {
         //changeWeather = true;
@@ -189,7 +177,7 @@ public class WeatherController : MonoBehaviour
         // if exact match is not found, List.BinarySearch will return index of the first items greater than passed value, but in specific form (negative)
         // we need to apply ~ to this negative value to get real index
         if (idx < 0)
-            idx = 0;
+            idx = ~idx;
         if (idx > cumulative.Count - 1)
              idx = cumulative.Count - 1; 
 
