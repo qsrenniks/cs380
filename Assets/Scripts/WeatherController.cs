@@ -185,8 +185,25 @@ public class WeatherController : MonoBehaviour
         
     }
 
-    public void OnMasterChanged(float value)
+    public void OnRainProbChanged(float value)
     {
-        WCmasterIntensity = value;
+        clearTo.y = value;
+        rainTo.y = value;
+        snowTo.y = value;
+        updateMatrix();
+    }
+    public void OnClearProbChanged(float value)
+    {
+        clearTo.x = value;
+        rainTo.x = value;
+        snowTo.x = value;
+        updateMatrix();
+    }
+    public void OnSnowProbChanged(float value)
+    {
+        clearTo.z = value;
+        rainTo.z = value;
+        snowTo.z = value;
+        updateMatrix();
     }
 }
