@@ -858,10 +858,10 @@ MonoBehaviour:
   gravity: 4
   evaporationSpeed: 0.01
   depositSpeed: 0.3
-  erodeSpeed: 0.3
-  rainPerDay: 10
+  erodeSpeed: 0.15
+  rainPerDay: 5
   treeR: 50
-  maxSnowAmount: 0.2
+  snowElevationLimit: 0.75
 --- !u!156049354 &531820402
 Grid:
   m_ObjectHideFlags: 0
