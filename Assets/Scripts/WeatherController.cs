@@ -19,9 +19,9 @@ public class WeatherController : MonoBehaviour
     [Range(0, 1f)]
     public float WCfogIntensity = 1f;
 
-    public Vector3 clearTo = new Vector3( 0.3f, 0.4f, 0.3f );
-    public Vector3 rainTo = new Vector3(0.4f, 0.4f, 0.2f);
-    public Vector3 snowTo = new Vector3(0.2f, 0.5f, 0.3f);
+    public Vector3 clearTo = new Vector3( 0.6f, 0.2f, 0.2f );
+    public Vector3 rainTo = new Vector3(0.6f, 0.2f, 0.2f);
+    public Vector3 snowTo = new Vector3(0.6f, 0.2f, 0.2f);
 
 
     public double[][] WeatherMatrix = new double[3][]; // 0 = clear, 1 = rain, 2 = snow
