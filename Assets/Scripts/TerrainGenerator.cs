@@ -38,6 +38,21 @@ public class TerrainGenerator : MonoBehaviour
   public float rockLevel = 0.9f;
   public float power = 1.0f;
 
+  public void onScaleChanged(float newScale)
+  {
+    scale = newScale;
+  }
+
+  public void onRockLevelChanged(float newRockLevel)
+  {
+    rockLevel = newRockLevel;
+  }
+
+  public void onWaterLevelChanged(float newWaterLevel)
+  {
+    waterLevel = newWaterLevel;
+  }
+
   public Color rockColor;
   public Color landColor;
   public Color waterColor;
