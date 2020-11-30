@@ -2305,11 +2305,11 @@ MonoBehaviour:
   foodLayer:
     grid: {fileID: 736663376}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
-    layerColor: {r: 0, g: 1, b: 0.116336346, a: 1}
+    layerColor: {r: 0.9716981, g: 0.5218561, b: 0, a: 1}
   foliageLayer:
     grid: {fileID: 205241146}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
-    layerColor: {r: 1, g: 0.40356088, b: 0, a: 1}
+    layerColor: {r: 0.044874907, g: 1, b: 0, a: 1}
   snowLayer:
     grid: {fileID: 34723474}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
