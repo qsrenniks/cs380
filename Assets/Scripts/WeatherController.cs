@@ -184,4 +184,9 @@ public class WeatherController : MonoBehaviour
         return sequence[idx];
         
     }
+
+    public void OnMasterChanged(float value)
+    {
+        WCmasterIntensity = value;
+    }
 }
