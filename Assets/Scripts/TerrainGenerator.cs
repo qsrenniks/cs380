@@ -53,6 +53,36 @@ public class TerrainGenerator : MonoBehaviour
     waterLevel = newWaterLevel;
   }
 
+  public void onMaxSedimentLoadChanged(float newSedimentLoad)
+  {
+    maxSedimentPickup = newSedimentLoad;
+  }
+
+  public void onMinSedimentLoadChanged(float newSedimentLoad)
+  {
+    minSedimentPickup = newSedimentLoad;
+  }
+
+  public void onErosionRadius(float erosion)
+  {
+    erosionRadius = (int)erosion;
+  }
+
+  public void onDropletLifetime(float dropletLifetime)
+  {
+    maxDropletLifetime = (int)dropletLifetime;
+  }
+
+  public void onDropletSpeed(float speed)
+  {
+    startSpeed = speed;
+  }
+
+  public void onEvaporationSpeed(float evapSpeed)
+  {
+    evaporationSpeed = evapSpeed;
+  }
+
   public Color rockColor;
   public Color landColor;
   public Color waterColor;

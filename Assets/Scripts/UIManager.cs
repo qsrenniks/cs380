@@ -8,8 +8,9 @@ public class UIManager : MonoBehaviour
     private int type;
 
     public GameObject settingsBar;
-    public GameObject slider1;
-    public GameObject slider2;
+    public GameObject WeatherSliders;
+    public GameObject TerrianSliders;
+    public GameObject VillageSliders;
 
     // Start is called before the first frame update
     void Start()
@@ -27,13 +28,23 @@ public class UIManager : MonoBehaviour
     public void ChangeType(int t)
     {
         type = t;
-        if (type == 0)
+        if (type == 0) // Weather
         {
-            slider1.SetActive(true);
+            WeatherSliders.SetActive(true);
+            TerrianSliders.SetActive(false);
+            TerrianSliders.SetActive(false);
         }
-        else if (type == 1)
+        else if (type == 1) // Terrian
         {
-            slider2.SetActive(false);
+            WeatherSliders.SetActive(false);
+            TerrianSliders.SetActive(true);
+            TerrianSliders.SetActive(false);
+        }
+        else if (type == 2) // Village
+        {
+            WeatherSliders.SetActive(false);
+            TerrianSliders.SetActive(false);
+            TerrianSliders.SetActive(true);
         }
     }
 }
