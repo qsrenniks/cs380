@@ -16,6 +16,8 @@ public class SnowController : MonoBehaviour
     float snowLevel;
     public bool autoUpdate = true;
 
+    public Camera MainCamera;
+
     public ParticleSystem snowPart;
     public ParticleSystem windPart;
     public ParticleSystem fogPart;
@@ -42,6 +44,10 @@ public class SnowController : MonoBehaviour
         windEmission = windPart.emission;
         windMain = windPart.main;
         fogEmission = fogPart.emission;
+
+        Vector3 v = MainCamera.transform.position;
+        snowPart.transform.position = new Vector3(v.x, v.y + 65.0f, 0);
+
         UpdateAll();
     }
 

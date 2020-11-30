@@ -19,6 +19,10 @@ public class WeatherController : MonoBehaviour
     [Range(0, 1f)]
     public float WCfogIntensity = 1f;
 
+    public Vector3 clearTo = new Vector3( 0.3f, 0.4f, 0.3f );
+    public Vector3 rainTo = new Vector3(0.4f, 0.4f, 0.2f);
+    public Vector3 snowTo = new Vector3(0.2f, 0.5f, 0.3f);
+
 
     public double[][] WeatherMatrix = new double[3][]; // 0 = clear, 1 = rain, 2 = snow
     public double[] WeatherType = new double[4]; // 0 = just weather, 1 = weather + Wind, 2 = weather + fog, 3 = weather + wind + fog
@@ -48,9 +52,9 @@ public class WeatherController : MonoBehaviour
         //["0.4","0.4","0.2"],
         //["0.2","0.5","0.3"]]
 
-        WeatherMatrix[0] = new double[] { 0.6, 0.2, 0.2 };
-        WeatherMatrix[1] = new double[] { 0.4, 0.4, 0.2 };
-        WeatherMatrix[2] = new double[] { 0.2, 0.5, 0.3 };
+        WeatherMatrix[0] = new double[] { clearTo.x, clearTo.y, clearTo.z };
+        WeatherMatrix[1] = new double[] { rainTo.x, rainTo.y, rainTo.z };
+        WeatherMatrix[2] = new double[] { snowTo.x, snowTo.y, snowTo.z };
 
         //Type 
         // .5, .2, .2, .1
@@ -58,8 +62,6 @@ public class WeatherController : MonoBehaviour
         WeatherType[1] = .2; //wind
         WeatherType[2] = .2; //fog
         WeatherType[3] = .1; //wind + fog
-
-        currentWeather = Choice(weatherArray, WeatherMatrix[0]);
 
         RC = rainObject.GetComponent<RainController>();
         SC = snowObject.GetComponent<SnowController>();
@@ -70,22 +72,26 @@ public class WeatherController : MonoBehaviour
     {
         if(changeWeather || autoUpdate)
         {
+            updateMatrix();
             if(changeWeather)
             {
                 if(currentWeather == weather.clear)
                 {
                     currentWeather = Choice(weatherArray, WeatherMatrix[0]);
                     //change values
+                    updateIntensity(currentWeather);
                 }
                 else if (currentWeather == weather.rain)
                 {
                     currentWeather = Choice(weatherArray, WeatherMatrix[1]);
                     //change values
+                    updateIntensity(currentWeather);
                 }
                 else if (currentWeather == weather.snow)
                 {
                     currentWeather = Choice(weatherArray, WeatherMatrix[2]);
                     //change values
+                    updateIntensity(currentWeather);
                 }
                 changeWeather = false;
             }
@@ -98,6 +104,41 @@ public class WeatherController : MonoBehaviour
             RC.OnWindChanged(WCwindIntensity);
             RC.OnFogChanged(WCfogIntensity);
             
+        }
+    }
+
+    private void updateMatrix()
+    {
+        WeatherMatrix[0][0] = clearTo.x;
+        WeatherMatrix[0][1] = clearTo.y;
+        WeatherMatrix[0][2] = clearTo.z;
+        WeatherMatrix[1][0] = rainTo.x;
+        WeatherMatrix[1][1] = rainTo.y;
+        WeatherMatrix[1][2] = rainTo.z;
+        WeatherMatrix[2][0] = snowTo.x;
+        WeatherMatrix[2][1] = snowTo.y;
+        WeatherMatrix[2][2] = snowTo.z;
+    }
+
+    private void updateIntensity(weather newWeather)
+    {
+        if(newWeather == weather.clear)
+        {
+            WCmasterIntensity = 0.0f;
+            WCrainIntensity = 0.0f;
+            WCsnowIntensity = 0.0f;
+        }
+        else if(newWeather == weather.rain)
+        {
+            WCmasterIntensity = 1.0f;
+            WCrainIntensity = 1.0f;
+            WCsnowIntensity = 0.0f;
+        }
+        else if(newWeather == weather.snow)
+        {
+            WCmasterIntensity = 1.0f;
+            WCrainIntensity = 0.0f;
+            WCsnowIntensity = 1.0f;
         }
     }
 
@@ -136,7 +177,7 @@ public class WeatherController : MonoBehaviour
         // if exact match is not found, List.BinarySearch will return index of the first items greater than passed value, but in specific form (negative)
         // we need to apply ~ to this negative value to get real index
         if (idx < 0)
-            idx = 0;
+            idx = ~idx;
         if (idx > cumulative.Count - 1)
              idx = cumulative.Count - 1; 
 
