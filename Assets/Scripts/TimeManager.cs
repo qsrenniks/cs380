@@ -13,6 +13,8 @@ public class TimeManager : MonoBehaviour
     public Timer dayTimer;
     public float realSecondsToGameDay = 5.0f;
 
+    public int changeWeatherDay = 0;
+
     public WeatherController WC;
     public static TimeManager Instance
     {
@@ -104,8 +106,13 @@ public class TimeManager : MonoBehaviour
         dayTimer.Update();
         if(dayTimer.isDone())
         {
-            //change weather
-            WC.ChangeWeather();
+            if(changeWeatherDay + 2 <= rawDay)
+            {
+                //change weather
+                WC.ChangeWeather();
+                changeWeatherDay = rawDay;
+            }
+
             currentDay++;
             rawDay++;
             if (currentDay > 30)

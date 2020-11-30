@@ -3,17 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
+[System.Serializable]
 public class VillageManager : MonoBehaviour
 {
     private static VillageManager instance = null;
-
     public int initialPopulaton = 10;
+    public Tile purple;
+
     public List<GameObject> population;
     public GameObject villagerPrefab;
     public int mutationRate;
-    public enum E_JOB {WOODCUTTER = 0, MINER, FOODGATHER, WATERCOLLECT, COUNT}
+    public enum E_JOB {WOODCUTTER = 0, FOODGATHER, WATERCOLLECT, COUNT}
     public int[] jobCounter;
+    public GameObject terrainManager;
+
+    public (int, int) homeTile;
+
+    public (int, int)[] knownForrests;
+    public (int, int)[] knownFoodSources;
+    public (int, int)[] knownWaterSources;
 
     public static VillageManager Instance
     {
@@ -104,43 +114,27 @@ public class VillageManager : MonoBehaviour
             }
             population.Add(newVillager);
         }
-    }
 
-    public void Repopulate()
-    {
-        Debug.Log("Repopulation");
-        for (int i = 0; i < population.Count; i++)
+        // find a starting spot for population
+        TerrainGenerator terrainGenerator = terrainManager.GetComponent(typeof(TerrainGenerator)) as TerrainGenerator;
+        int randomX = Random.Range(0, terrainGenerator.mapSize - 1);
+        int randomY = Random.Range(0, terrainGenerator.mapSize - 1);
+        while (!terrainGenerator.IsLand(randomX, randomY))
         {
-            VillagerBaseBehavior villagerData = population[i].GetComponent<VillagerBaseBehavior>();
-            if (villagerData.partner == null)
-            {
-                for (int j = 1; j < population.Count; j++)
-                {
-                    VillagerBaseBehavior otherVillagerData = population[j].GetComponent<VillagerBaseBehavior>();
-                    if (villagerData.partner == null && GameManager.Instance.DifficultyClassCheck(8, villagerData.statModArray[(int)VillagerBaseBehavior.E_STATS.CHARISMA]))
-                    {
-                        villagerData.partner = population[j];
-                        otherVillagerData.partner = population[i];
-                        break;
-                    }
-                }
-            }
+            randomX = Random.Range(0, terrainGenerator.mapSize - 1);
+            randomY = Random.Range(0, terrainGenerator.mapSize - 1);
         }
-
-        for (int i = 0; i < population.Count; i++)
+        terrainGenerator.populaceLayer.setTileIntensity(randomX, randomY, 1.0f);
+        homeTile = (randomX, randomY);
+        for (int i = 0; i < initialPopulaton; i++)
         {
-            VillagerBaseBehavior villagerData = population[i].GetComponent<VillagerBaseBehavior>();
-            if (villagerData.partner != null && villagerData.canMakeChildren == true && villagerData.getAge() >= 18)
-            {
-                GameObject newVillager = Instantiate(villagerPrefab);
-                
-                population.Add(villagerData.MakeChild(mutationRate, newVillager));
-            }
+            population[i].GetComponent<VillagerBaseBehavior>().currentLocation = homeTile;
         }
     }
+
     void Awake()
     {
-        jobCounter = new int[] { 0, 0, 0 };
+        jobCounter = new int[] { 0, 0, 0};
     }
     // Start is called before the first frame update
     void Start()

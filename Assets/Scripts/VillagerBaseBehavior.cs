@@ -18,6 +18,8 @@ public class VillagerBaseBehavior : MonoBehaviour
     public int currentDay = 0;
     public bool hasAction = true;
 
+    public (int, int) currentLocation;
+
     public int getAge()
     {
         int yearsDifference = TimeManager.Instance.currentYear - dateOfBirth[2];
@@ -81,20 +83,35 @@ public class VillagerBaseBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(currentDay < TimeManager.Instance.rawDay)
+        if(currentDay + 7 <= TimeManager.Instance.rawDay) // reset action after a week
             hasAction = true;
 
         int age = getAge();
-        if (hasAction)
+
+        // find partner action
+        if(hasAction && partner == null && age >= 18)
         {
-            // reproduction action
-            if (age >= 18 && reproductionCooldown.isCompleted == true)
+            for (int i = 0; i < VillageManager.Instance.population.Count; i++)
             {
-                GameObject newVillager = Instantiate(VillageManager.Instance.villagerPrefab);
-                MakeChild(5, newVillager);
-                reproductionCooldown.reset();
-                hasAction = false;
+                if (gameObject == VillageManager.Instance.population[i])
+                    continue;
+                VillagerBaseBehavior otherVillagerData = VillageManager.Instance.population[i].GetComponent<VillagerBaseBehavior>();
+                if (otherVillagerData.partner == null && GameManager.Instance.DifficultyClassCheck(8, statModArray[(int)E_STATS.CHARISMA]))
+                {
+                    partner = otherVillagerData.gameObject;
+                    otherVillagerData.partner = VillageManager.Instance.population[i];
+                    break;
+                }
             }
+            hasAction = false;
+        }
+        // reproduction action
+        if (age >= 18 && reproductionCooldown.isCompleted == true && hasAction)
+        {
+            GameObject newVillager = Instantiate(VillageManager.Instance.villagerPrefab);
+            MakeChild(5, newVillager);
+            reproductionCooldown.reset();
+            hasAction = false;
         }
 
         if (age >= 55) // old age check

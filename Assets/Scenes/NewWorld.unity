@@ -152,7 +152,7 @@ Transform:
   m_Children:
   - {fileID: 446273919}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &22890914
 GameObject:
@@ -523,6 +523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   villageManagerPrefab: {fileID: 5104447912245461, guid: b7e969b3f173f2149bbee41e6fd44dbd, type: 3}
+  terrainGenerator: {fileID: 531820400}
 --- !u!4 &56527455
 Transform:
   m_ObjectHideFlags: 0
@@ -535,7 +536,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &56955974
 GameObject:
@@ -2159,7 +2160,7 @@ MonoBehaviour:
   populaceLayer:
     grid: {fileID: 1269824056}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
-    layerColor: {r: 1, g: 1, b: 1, a: 1}
+    layerColor: {r: 0.5943396, g: 0, b: 0.56360453, a: 1}
   buildingsLayer:
     grid: {fileID: 1662453734}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
@@ -2224,7 +2225,7 @@ Transform:
   - {fileID: 34723476}
   - {fileID: 1161653994}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &538796296
 GameObject:
@@ -3757,7 +3758,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1133217398
 GameObject:
