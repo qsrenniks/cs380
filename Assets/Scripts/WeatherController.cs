@@ -188,22 +188,22 @@ public class WeatherController : MonoBehaviour
     public void OnRainProbChanged(float value)
     {
         clearTo.y = value;
-        rainTo.y = value;
-        snowTo.y = value;
-        updateMatrix();
+        float temp = (1 - value) / 2;
+        clearTo.x = temp;
+        clearTo.z = temp;
     }
     public void OnClearProbChanged(float value)
     {
         clearTo.x = value;
-        rainTo.x = value;
-        snowTo.x = value;
-        updateMatrix();
+        float temp = (1-value) / 2;
+        clearTo.y = temp;
+        clearTo.z = temp;
     }
     public void OnSnowProbChanged(float value)
     {
         clearTo.z = value;
-        rainTo.z = value;
-        snowTo.z = value;
-        updateMatrix();
+        float temp = (1 - value) / 2;
+        clearTo.y = temp;
+        clearTo.x = temp;
     }
 }
