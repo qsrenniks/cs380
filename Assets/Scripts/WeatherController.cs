@@ -144,7 +144,7 @@ public class WeatherController : MonoBehaviour
 
     public void ChangeWeather()
     {
-        //changeWeather = true;
+        changeWeather = true;
     }
 
     public weather getCurrentWeather()

@@ -1633,7 +1633,7 @@ MonoBehaviour:
   currentMonth: 1
   currentDay: 1
   rawDay: 0
-  realSecondsToGameDay: 0.001
+  realSecondsToGameDay: 1
   WC: {fileID: 1547289501}
 --- !u!4 &1314045867
 Transform:
@@ -2293,6 +2293,10 @@ PrefabInstance:
     - target: {fileID: 6708431366418716566, guid: e9af06bc54a72ea4e8548977bd726e6b, type: 3}
       propertyPath: m_LocalScale.z
       value: 9.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6708431366418716566, guid: e9af06bc54a72ea4e8548977bd726e6b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 66
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9af06bc54a72ea4e8548977bd726e6b, type: 3}
