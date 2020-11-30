@@ -476,7 +476,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 6
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -497,7 +497,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 531820403}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &339897350
 GameObject:
@@ -689,11 +689,11 @@ MonoBehaviour:
   foodLayer:
     grid: {fileID: 736663376}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
-    layerColor: {r: 0, g: 0, b: 0, a: 0}
+    layerColor: {r: 0, g: 1, b: 0.116336346, a: 1}
   foliageLayer:
     grid: {fileID: 205241146}
     white: {fileID: 11400000, guid: 418f9847f1f9aff42b74803d9ae5a1ed, type: 2}
-    layerColor: {r: 0, g: 0, b: 0, a: 0}
+    layerColor: {r: 1, g: 0.40356088, b: 0, a: 1}
   dropletDensity: 10
   maxSedimentPickup: 0.5
   minSedimentPickup: 0.01
@@ -710,6 +710,7 @@ MonoBehaviour:
   depositSpeed: 0.3
   erodeSpeed: 0.3
   rainPerDay: 10
+  treeR: 50
 --- !u!156049354 &531820402
 Grid:
   m_ObjectHideFlags: 0
@@ -735,9 +736,9 @@ Transform:
   m_Children:
   - {fileID: 1662453736}
   - {fileID: 1269824058}
-  - {fileID: 1161653994}
   - {fileID: 205241148}
   - {fileID: 736663374}
+  - {fileID: 1161653994}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -870,7 +871,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 531820403}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!483693784 &736663375
 TilemapRenderer:
@@ -1304,11 +1305,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161653991}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.3, y: 1.61, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 531820403}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1224745055
 GameObject:
@@ -1512,7 +1513,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 7
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -2101,7 +2102,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 8
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16

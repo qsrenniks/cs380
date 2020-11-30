@@ -67,6 +67,7 @@ public class TerrainGenerator : MonoBehaviour
   public float depositSpeed = 0.3f;
   public float erodeSpeed = 0.3f;
   public int rainPerDay = 10;
+  public float treeR = 50.0f;
 
   //this is the erosion layer of the map that helps tell each node how they should evenly pull and place sediment
   int [][] erosionIndices;
@@ -136,6 +137,26 @@ public class TerrainGenerator : MonoBehaviour
         pix[x * mapSize + y] = 1.0f - Mathf.Pow(final, power);
       }
     }
+
+    for(int y = 0; y < mapSize; ++y)
+    {
+      for(int x = 0; x < mapSize; ++x)
+      {
+        float xCoord = (((float)(x) / (float)(mapSize))) * treeR;
+        float yCoord = (((float)(y) / (float)(mapSize))) * treeR;
+
+        float final = Mathf.PerlinNoise(xCoord, yCoord);
+
+        if(isLand(x, y) && final >= 0.8f)
+        {
+          foliageLayer.setTileIntensity(x, y, 1.0f);
+        }
+        else 
+        {
+          foliageLayer.setTileIntensity(x, y, 0.0f);
+        }
+      }
+    }
   }
 
   void Update()
@@ -168,7 +189,8 @@ public class TerrainGenerator : MonoBehaviour
         if (isWater(i, j))
         {
           float val = pix[i * mapSize + j];
-          Color finalColor = Color.Lerp(waterColor, landColor, (val - 0.0f) / (currentWaterLevel - 0.0f));
+          //Color finalColor = Color.Lerp(waterColor, landColor, (val - 0.0f) / (currentWaterLevel - 0.0f));
+          Color finalColor = waterColor;
           grid.SetTile(grid.WorldToCell(start), white);
           grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
           grid.SetColor(grid.WorldToCell(start), finalColor);
@@ -176,7 +198,8 @@ public class TerrainGenerator : MonoBehaviour
         else if (isLand(i, j))
         {
           float val = pix[i * mapSize + j];
-          Color finalColor = Color.Lerp(landColor, rockColor, (val - currentWaterLevel) / (rockLevel - currentWaterLevel));
+          //Color finalColor = Color.Lerp(landColor, rockColor, (val - currentWaterLevel) / (rockLevel - currentWaterLevel));
+          Color finalColor = landColor;
           grid.SetTile(grid.WorldToCell(start), white);
           grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
           grid.SetColor(grid.WorldToCell(start), finalColor);
