@@ -669,9 +669,9 @@ MonoBehaviour:
   xOrg: 0
   yOrg: 0
   scale: 2.8
-  waterLevel: 0.37
+  waterLevel: 0.1
   waterLevelOffsetMax: 0.01
-  rockLevel: 0.6
+  rockLevel: 0.9
   power: 3.6
   rockColor: {r: 0.49803925, g: 0.5019608, b: 0.49803925, a: 1}
   landColor: {r: 0.73333335, g: 0.4784314, b: 0.34509805, a: 1}
