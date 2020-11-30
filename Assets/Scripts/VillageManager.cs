@@ -21,9 +21,9 @@ public class VillageManager : MonoBehaviour
 
     public (int, int) homeTile;
 
-    public (int, int)[] knownForrests;
-    public (int, int)[] knownFoodSources;
-    public (int, int)[] knownWaterSources;
+    public HashSet<(int, int)> knownForrests;
+    public HashSet<(int, int)> knownFoodSources;
+    public HashSet<(int, int)> knownWaterSources;
 
     public static VillageManager Instance
     {
