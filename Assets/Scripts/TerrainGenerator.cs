@@ -122,8 +122,6 @@ public class TerrainGenerator : MonoBehaviour
 
   void CalcNoise()
   {
-    // For each pixel in the texture...
-
     for(int y = 0; y < mapSize; ++y)
     {
       for(int x = 0; x < mapSize; ++x)
@@ -136,6 +134,29 @@ public class TerrainGenerator : MonoBehaviour
         + 0.25f * Mathf.PerlinNoise(4.0f * xCoord, 4.0f * yCoord);
         pix[x * mapSize + y] = 1.0f - Mathf.Pow(final, power);
       }
+    }
+
+    
+  }
+
+  void Update()
+  {
+    WeatherController weatherController = weatherManager.GetComponent(typeof(WeatherController)) as WeatherController;
+    WeatherController.weather cW = weatherController.getCurrentWeather();
+
+    if(cW == WeatherController.weather.rain)
+    {
+      Erode(rainPerDay);
+    }
+    else if(cW == WeatherController.weather.clear)
+    {
+      currentWaterLevel -= Time.deltaTime * TimeManager.Instance.realSecondsToGameDay;
+      currentWaterLevel = Mathf.Clamp(currentWaterLevel, waterLevel - waterLevelOffsetMax, waterLevel + waterLevelOffsetMax);
+    }
+    else if(cW == WeatherController.weather.snow)
+    {
+      currentWaterLevel += Time.deltaTime * TimeManager.Instance.realSecondsToGameDay;
+      currentWaterLevel = Mathf.Clamp(currentWaterLevel, waterLevel - waterLevelOffsetMax, waterLevel + waterLevelOffsetMax);
     }
 
     for(int y = 0; y < mapSize; ++y)
@@ -156,26 +177,6 @@ public class TerrainGenerator : MonoBehaviour
           foliageLayer.setTileIntensity(x, y, 0.0f);
         }
       }
-    }
-  }
-
-  void Update()
-  {
-    WeatherController weatherController = weatherManager.GetComponent(typeof(WeatherController)) as WeatherController;
-    WeatherController.weather cW = weatherController.getCurrentWeather();
-    if(cW == WeatherController.weather.rain)
-    {
-      Erode(rainPerDay);
-    }
-    else if(cW == WeatherController.weather.clear)
-    {
-      currentWaterLevel -= Time.deltaTime;
-      currentWaterLevel = Mathf.Clamp(currentWaterLevel, waterLevel - waterLevelOffsetMax, waterLevel + waterLevelOffsetMax);
-    }
-    else if(cW == WeatherController.weather.snow)
-    {
-      currentWaterLevel += Time.deltaTime;
-      currentWaterLevel = Mathf.Clamp(currentWaterLevel, waterLevel - waterLevelOffsetMax, waterLevel + waterLevelOffsetMax);
     }
 
     for (int i = 0; i < mapSize; ++i)
