@@ -20,6 +20,17 @@ public class Layer
     Color newColor = layerColor * intensity;
     grid.SetColor(grid.WorldToCell(start), newColor);
   }
+
+  public float getTileIntensity(int x, int y, float intensity)
+  {
+    Vector3 start = new Vector3(0.0f, 0.0f, 0.0f);
+
+    start.x += x;
+    start.y += y;
+    grid.SetTile(grid.WorldToCell(start), white);
+    grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
+    return grid.GetColor(grid.WorldToCell(start)).r;
+  }
 }
 
 public class TerrainGenerator : MonoBehaviour
