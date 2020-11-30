@@ -21,7 +21,7 @@ public class Layer
     grid.SetColor(grid.WorldToCell(start), newColor);
   }
 
-  public float getTileIntensity(int x, int y, float intensity)
+  public float getTileIntensity(int x, int y)
   {
     Vector3 start = new Vector3(0.0f, 0.0f, 0.0f);
 
