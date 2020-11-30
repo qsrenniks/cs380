@@ -17,7 +17,8 @@ public class Layer
     start.y += y;
     grid.SetTile(grid.WorldToCell(start), white);
     grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
-    grid.SetColor(grid.WorldToCell(start), layerColor * intensity);
+    Color newColor = layerColor * intensity;
+    grid.SetColor(grid.WorldToCell(start), newColor);
   }
 }
 
@@ -50,6 +51,7 @@ public class TerrainGenerator : MonoBehaviour
   public Layer buildingsLayer = new Layer();
   public Layer foodLayer = new Layer();
   public Layer foliageLayer = new Layer();
+  public Layer snowLayer = new Layer();
 
   public int dropletDensity = 10; // every step in a direction knocks one off this list until the rain drop settles
   public float maxSedimentPickup = 0.5f;
@@ -68,6 +70,9 @@ public class TerrainGenerator : MonoBehaviour
   public float erodeSpeed = 0.3f;
   public int rainPerDay = 10;
   public float treeR = 50.0f;
+  public float snowElevationLimit = 0.9f;
+
+  private float currentSnowAmount = 0.0f;
 
   //this is the erosion layer of the map that helps tell each node how they should evenly pull and place sediment
   int [][] erosionIndices;
@@ -147,16 +152,23 @@ public class TerrainGenerator : MonoBehaviour
     if(cW == WeatherController.weather.rain)
     {
       Erode(rainPerDay);
+
+      currentWaterLevel -= Time.deltaTime * TimeManager.Instance.realSecondsToGameDay;
+      currentWaterLevel = Mathf.Clamp(currentWaterLevel, waterLevel - waterLevelOffsetMax, waterLevel + waterLevelOffsetMax);
     }
     else if(cW == WeatherController.weather.clear)
     {
-      currentWaterLevel -= Time.deltaTime * TimeManager.Instance.realSecondsToGameDay;
+      float snowDelta = Time.deltaTime * TimeManager.Instance.realSecondsToGameDay;
+      currentSnowAmount -= snowDelta;
+      currentSnowAmount = Mathf.Clamp(currentSnowAmount, 0.0f, 1.0f);
+
+      currentWaterLevel += snowDelta;
       currentWaterLevel = Mathf.Clamp(currentWaterLevel, waterLevel - waterLevelOffsetMax, waterLevel + waterLevelOffsetMax);
     }
     else if(cW == WeatherController.weather.snow)
     {
-      currentWaterLevel += Time.deltaTime * TimeManager.Instance.realSecondsToGameDay;
-      currentWaterLevel = Mathf.Clamp(currentWaterLevel, waterLevel - waterLevelOffsetMax, waterLevel + waterLevelOffsetMax);
+      currentSnowAmount += Time.deltaTime * TimeManager.Instance.realSecondsToGameDay;
+      currentSnowAmount = Mathf.Clamp(currentSnowAmount, 0.0f, 1.0f);
     }
 
     for(int y = 0; y < mapSize; ++y)
@@ -175,6 +187,24 @@ public class TerrainGenerator : MonoBehaviour
         else 
         {
           foliageLayer.setTileIntensity(x, y, 0.0f);
+        }
+
+        if(isLand(x, y) || isRock(x, y))
+        {
+          float height = pix[x * mapSize + y];
+          float snow = (currentSnowAmount) * height;
+          if(snow >= snowElevationLimit)
+          {
+            snowLayer.setTileIntensity(x, y, 1.0f);
+          }
+          else
+          {
+            snowLayer.setTileIntensity(x, y, 0.0f);
+          }
+        }
+        else
+        {
+          snowLayer.setTileIntensity(x, y, 0.0f);
         }
       }
     }
