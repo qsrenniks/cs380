@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialPopulaton: 10
+  purple: {fileID: 11400000, guid: af8b158f8ce80634c8a9e97ff3555887, type: 2}
   population: []
   villagerPrefab: {fileID: 3230272522282605497, guid: 15bbb9b7e6a07004184e0db28b0ab977, type: 3}
   mutationRate: 5
+  jobCounter: 

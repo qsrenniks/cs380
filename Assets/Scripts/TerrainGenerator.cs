@@ -139,19 +139,23 @@ public class TerrainGenerator : MonoBehaviour
   int currentErosionRadius;
   int currentMapSize;
 
+  void Awake()
+  {
+      pix = new float[mapSize * mapSize];
+      cameraObject.transform.position = new Vector3((float)mapSize / 2.0f, (float)mapSize / 2.0f, -10.0f);
+      Camera a = cameraObject.GetComponent(typeof(Camera)) as Camera;
+      a.orthographicSize = ((float)mapSize / 2.0f) + 15.0f;
+      currentWaterLevel = waterLevel;
+      //populaceLayer.setTileIntensity(10, 10, 1.0f);
+      CalcNoise();
+      Initialize(false);
+  }
   void Start()
   {
-    pix = new float[mapSize * mapSize];
-    cameraObject.transform.position = new Vector3((float)mapSize / 2.0f, (float)mapSize / 2.0f, -10.0f);
-    Camera a = cameraObject.GetComponent(typeof(Camera)) as Camera;
-    a.orthographicSize = ((float)mapSize / 2.0f) + 15.0f;
-    currentWaterLevel = waterLevel;
-    //populaceLayer.setTileIntensity(10, 10, 1.0f);
-    CalcNoise();
-    Initialize(false);
+      
   }
 
-  bool isWater(int x, int y)
+  public bool IsWater(int x, int y)
   {
     float r = pix[x * mapSize + y];
     if (r < currentWaterLevel)
@@ -161,7 +165,7 @@ public class TerrainGenerator : MonoBehaviour
     return false;
   }
 
-  bool isLand(int x, int y)
+  public bool IsLand(int x, int y)
   {
     float r = pix[x * mapSize + y];
     if (r >= currentWaterLevel && r < rockLevel)
@@ -171,7 +175,7 @@ public class TerrainGenerator : MonoBehaviour
     return false;
   }
 
-  bool isRock(int x, int y)
+  public bool IsRock(int x, int y)
   {
     float r = pix[x * mapSize + y];
     if (r >= rockLevel)
@@ -196,8 +200,15 @@ public class TerrainGenerator : MonoBehaviour
         pix[x * mapSize + y] = 1.0f - Mathf.Pow(final, power);
       }
     }
+  }
 
-    
+  public bool IsInBounds(int x, int y)
+  {
+     if (x < 0 || x >= mapSize)
+       return false;
+     if (y < 0 || y >= mapSize)
+       return false;
+     return true;
   }
 
   void Update()
@@ -236,7 +247,7 @@ public class TerrainGenerator : MonoBehaviour
 
         float final = Mathf.PerlinNoise(xCoord, yCoord);
 
-        if(isLand(x, y) && final >= 0.8f)
+        if(IsLand(x, y) && final >= 0.8f)
         {
           foliageLayer.setTileIntensity(x, y, 1.0f);
         }
@@ -245,7 +256,7 @@ public class TerrainGenerator : MonoBehaviour
           foliageLayer.setTileIntensity(x, y, 0.0f);
         }
 
-        if(isLand(x, y) || isRock(x, y))
+        if(IsLand(x, y) || IsRock(x, y))
         {
           float height = pix[x * mapSize + y];
           float snow = (currentSnowAmount) * height;
@@ -273,7 +284,7 @@ public class TerrainGenerator : MonoBehaviour
         start.x += i;
         start.y += j;
 
-        if (isWater(i, j))
+        if (IsWater(i, j))
         {
           float val = pix[i * mapSize + j];
           //Color finalColor = Color.Lerp(waterColor, landColor, (val - 0.0f) / (currentWaterLevel - 0.0f));
@@ -282,7 +293,7 @@ public class TerrainGenerator : MonoBehaviour
           grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
           grid.SetColor(grid.WorldToCell(start), finalColor);
         }
-        else if (isLand(i, j))
+        else if (IsLand(i, j))
         {
           float val = pix[i * mapSize + j];
           //Color finalColor = Color.Lerp(landColor, rockColor, (val - currentWaterLevel) / (rockLevel - currentWaterLevel));
@@ -291,7 +302,7 @@ public class TerrainGenerator : MonoBehaviour
           grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
           grid.SetColor(grid.WorldToCell(start), finalColor);
         }
-        else if(isRock(i, j))
+        else if(IsRock(i, j))
         {
           grid.SetTile(grid.WorldToCell(start), white);
           grid.SetTileFlags(grid.WorldToCell(start), TileFlags.None);
