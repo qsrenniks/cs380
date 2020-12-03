@@ -31,7 +31,7 @@ public class VillageManager : MonoBehaviour
     public int knownWaterSourceCount = 0;
     public int buildingCount = 1;
 
-
+    public bool spawnNextToWater = false;
 
     public int currentFood = 0;
     public int foodCapacity = 0;
@@ -139,34 +139,57 @@ public class VillageManager : MonoBehaviour
             }
             population.Add(newVillager);
         }
-
-        // find a starting spot for population
         TerrainGenerator terrainGenerator = terrainManager.GetComponent(typeof(TerrainGenerator)) as TerrainGenerator;
-        int randomX = Random.Range(0, terrainGenerator.mapSize);
-        int randomY = Random.Range(0, terrainGenerator.mapSize);
-        while (!terrainGenerator.IsLand(randomX, randomY))
+
+        if (spawnNextToWater)
         {
-            randomX = Random.Range(0, terrainGenerator.mapSize);
-            randomY = Random.Range(0, terrainGenerator.mapSize);
+            // find a starting spot for population next to water
+            int randomX = Random.Range(0, terrainGenerator.mapSize);
+            int randomY = Random.Range(0, terrainGenerator.mapSize);
+
+            while (!terrainGenerator.IsLand(randomX, randomY) && (
+                !terrainGenerator.IsWater(randomX + 1, randomY) ||
+                !terrainGenerator.IsWater(randomX - 1, randomY) ||
+                !terrainGenerator.IsWater(randomX, randomY + 1) ||
+                !terrainGenerator.IsWater(randomX, randomY - 1)))
+            {
+                randomX = Random.Range(0, terrainGenerator.mapSize);
+                randomY = Random.Range(0, terrainGenerator.mapSize);
+            }
+            terrainGenerator.populaceLayer.setTileIntensity(randomX, randomY, 1.0f);
+            homeTile = (randomX, randomY);
         }
-        terrainGenerator.populaceLayer.setTileIntensity(randomX, randomY, 1.0f);
-        homeTile = (randomX, randomY);
+        else 
+        {
+            // find a starting spot for population
+            int randomX = Random.Range(0, terrainGenerator.mapSize);
+            int randomY = Random.Range(0, terrainGenerator.mapSize);
+            while (!terrainGenerator.IsLand(randomX, randomY))
+            {
+                randomX = Random.Range(0, terrainGenerator.mapSize);
+                randomY = Random.Range(0, terrainGenerator.mapSize);
+            }
+            terrainGenerator.populaceLayer.setTileIntensity(randomX, randomY, 1.0f);
+            homeTile = (randomX, randomY);
+        }
+
         for (int i = 0; i < initialPopulaton; i++)
         {
             population[i].GetComponent<VillagerBaseBehavior>().currentLocation = homeTile;
         }
         terrainGenerator.buildingsLayer.setTileIntensity(homeTile.Item1, homeTile.Item2, 0.1f);
-        foodCapacity += 200;
+        foodCapacity += 400;
         woodCapacity += 300;
-        waterCapacity += 200;
+        waterCapacity += 400;
 
-        currentFood = 200;
+        currentFood = 400;
         currentWood = 0;
-        currentWater = 200;
+        currentWater = 400;
         bulidingTiles.Add((homeTile.Item1, homeTile.Item2));
         buildingCount++;
 
         exporationQueue.Enqueue(homeTile);
+        Debug.Log(homeTile); // good seeds (91,5)
     }
 
     void createNewBuilding()

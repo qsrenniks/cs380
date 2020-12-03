@@ -6010,7 +6010,7 @@ MonoBehaviour:
   currentMonth: 1
   currentDay: 1
   rawDay: 0
-  realSecondsToGameDay: 1
+  realSecondsToGameDay: 0.001
   changeWeatherDay: 0
   WC: {fileID: 1547289501}
 --- !u!4 &1314045867

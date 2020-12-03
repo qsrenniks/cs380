@@ -22,17 +22,17 @@ public class WaterCollectorBehavior : MonoBehaviour
     void Update()
     {
         VillagerBaseBehavior baseBehavior = gameObject.GetComponent<VillagerBaseBehavior>();
-        var knownWoodSources = VillageManager.Instance.knownForrests;
-        if (knownWoodSources.Count != 0)
+        var knownWaterSources = VillageManager.Instance.knownWaterSources;
+        if (knownWaterSources.Count != 0)
         {
             if (baseBehavior.hasAction)
             {
                 bool collectedWater = false;
-                foreach ((int, int) woodSource in knownWoodSources)
+                foreach ((int, int) waterSource in knownWaterSources)
                 {
-                    if (checkForWater(woodSource.Item1, woodSource.Item2))
+                    if (checkForWater(waterSource.Item1, waterSource.Item2))
                     {
-                        VillageManager.Instance.currentWater += 60;
+                        VillageManager.Instance.currentWater += (80 + baseBehavior.statArray[(int)VillagerBaseBehavior.E_STATS.STRENGTH]); ;
                         VillageManager.Instance.currentWater = Mathf.Min(VillageManager.Instance.currentWater, VillageManager.Instance.waterCapacity);
                         collectedWater = true;
                         break;
@@ -42,12 +42,12 @@ public class WaterCollectorBehavior : MonoBehaviour
                 {
                     if(GameManager.Instance.DifficultyClassCheck(10, baseBehavior.statModArray[(int)VillagerBaseBehavior.E_STATS.INTELLIGENCE]))
                     {
-                        VillageManager.Instance.currentWater += (40 + baseBehavior.statArray[(int)VillagerBaseBehavior.E_STATS.INTELLIGENCE]);
+                        VillageManager.Instance.currentWater += (60 + baseBehavior.statArray[(int)VillagerBaseBehavior.E_STATS.INTELLIGENCE]);
                         VillageManager.Instance.currentWater = Mathf.Min(VillageManager.Instance.currentWater, VillageManager.Instance.waterCapacity);
                     }
                     else
                     {
-                        VillageManager.Instance.currentWater += 10;
+                        VillageManager.Instance.currentWater += 40;
                         VillageManager.Instance.currentWater = Mathf.Min(VillageManager.Instance.currentWater, VillageManager.Instance.waterCapacity);
                     }
                 }

@@ -42,6 +42,8 @@ public class FoodGathererBehavior : MonoBehaviour
                         }
                     }
                 }
+                VillageManager.Instance.currentFood += VillageManager.Instance.buildingCount * 5;
+                VillageManager.Instance.currentFood = Mathf.Min(VillageManager.Instance.currentFood, VillageManager.Instance.foodCapacity);
                 baseBehavior.hasAction = false;
             }
         }
