@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class VillagerBaseBehavior : MonoBehaviour
 {
@@ -15,8 +16,14 @@ public class VillagerBaseBehavior : MonoBehaviour
     public enum E_RACE { HUMAN = 0, ELF, DWARF, GNOME, HALFLING, TIEFLING, GOBLIN, COUNT};
     public int[] dateOfBirth; // month, day, year
     public TimeManager.GameTimer reproductionCooldown;
+    public TimeManager.GameTimer actionCooldown;
+    public TimeManager.GameTimer eatAndDrinkCooldown;
     public int currentDay = 0;
     public bool hasAction = true;
+    public int childrenCount = 0;
+    public int hungerCount = 0;
+    public int thirstCount = 0;
+
 
     public (int, int) currentLocation;
 
@@ -69,8 +76,11 @@ public class VillagerBaseBehavior : MonoBehaviour
         newVillagerData.dateOfBirth[2] = TimeManager.Instance.currentYear;
         canMakeChildren = false;
         otherVillagerData.canMakeChildren = false;
+        childrenCount++;
+        otherVillagerData.childrenCount++;
         return newVillager;
     }
+   
     void Awake()
     {
         statArray = new int[] { 0, 0, 0, 0, 0, 0 };
@@ -78,48 +88,143 @@ public class VillagerBaseBehavior : MonoBehaviour
         dateOfBirth = new int[] { 0, 0, 0 };
         reproductionCooldown = new TimeManager.GameTimer(270); // 9 months in days
         reproductionCooldown.isCompleted = true;
+
+        actionCooldown = new TimeManager.GameTimer(3);
+        actionCooldown.isCompleted = true;
+
+        eatAndDrinkCooldown = new TimeManager.GameTimer(1);
+        eatAndDrinkCooldown.isCompleted = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(currentDay + 7 <= TimeManager.Instance.rawDay) // reset action after a week
+        reproductionCooldown.Update();
+        actionCooldown.Update();
+        eatAndDrinkCooldown.Update();
+        if (actionCooldown.isCompleted) // reset action after a week
+        {
             hasAction = true;
+            actionCooldown.reset();
+        }
 
         int age = getAge();
-
-        // find partner action
-        if(hasAction && partner == null && age >= 18)
+        if(age >= 18)
         {
-            for (int i = 0; i < VillageManager.Instance.population.Count; i++)
+            // give job
+            if(GetComponents(typeof(Component)).Length <= 2)
             {
-                if (gameObject == VillageManager.Instance.population[i])
-                    continue;
-                VillagerBaseBehavior otherVillagerData = VillageManager.Instance.population[i].GetComponent<VillagerBaseBehavior>();
-                if (otherVillagerData.partner == null && GameManager.Instance.DifficultyClassCheck(8, statModArray[(int)E_STATS.CHARISMA]))
+                int rollResult = Random.Range(1, 4);
+                switch (rollResult)
                 {
-                    partner = otherVillagerData.gameObject;
-                    otherVillagerData.partner = VillageManager.Instance.population[i];
-                    break;
+                    case 1:
+                        gameObject.AddComponent(typeof(FoodGathererBehavior));
+                        break;
+                    case 2:
+                        gameObject.AddComponent(typeof(WaterCollectorBehavior));
+                        break;
+                    case 3:
+                        gameObject.AddComponent(typeof(WoodcutterBehavior));
+                        break;
                 }
             }
-            hasAction = false;
+            // find partner action
+            if (hasAction && partner == null)
+            {
+                for (int i = 0; i < VillageManager.Instance.population.Count; i++)
+                {
+                    if (gameObject == VillageManager.Instance.population[i])
+                        continue;
+                    VillagerBaseBehavior otherVillagerData = VillageManager.Instance.population[i].GetComponent<VillagerBaseBehavior>();
+                    if (otherVillagerData.partner == null && GameManager.Instance.DifficultyClassCheck(8, statModArray[(int)E_STATS.CHARISMA]))
+                    {
+                        partner = otherVillagerData.gameObject;
+                        otherVillagerData.partner = VillageManager.Instance.population[i];
+                        break;
+                    }
+                }
+                hasAction = false;
+            }
+            // reproduction action
+            if (hasAction && reproductionCooldown.isCompleted == true)
+            {
+                int randomRoll = Random.Range(0, 101);
+                randomRoll -= childrenCount * 20;
+                if(randomRoll > 0)
+                {
+                    GameObject newVillager = Instantiate(VillageManager.Instance.villagerPrefab);
+                    MakeChild(5, newVillager);
+                    VillageManager.Instance.population.Add(newVillager);
+                    reproductionCooldown.reset();
+                    canMakeChildren = true;
+                    hasAction = false;
+                }
+            }
         }
-        // reproduction action
-        if (age >= 18 && reproductionCooldown.isCompleted == true && hasAction)
+        
+        if(GetComponent<ExplorationBehavior>() == null && age >= 10) // explore
         {
-            GameObject newVillager = Instantiate(VillageManager.Instance.villagerPrefab);
-            MakeChild(5, newVillager);
-            reproductionCooldown.reset();
-            hasAction = false;
+            gameObject.AddComponent(typeof(ExplorationBehavior));
+        }
+
+        if(eatAndDrinkCooldown.isCompleted)
+        {
+            eatAndDrinkCooldown.reset();
+            if (VillageManager.Instance.currentFood <= 0)
+            {
+                hungerCount++;
+                if(hungerCount >= statArray[(int)E_STATS.CONSTITUTION])
+                {
+                    Debug.Log("Villager Died From Starvation");
+                    if (partner)
+                    {
+                        partner.GetComponent<VillagerBaseBehavior>().partner = null;
+                        partner = null;
+                    }
+                    VillageManager.Instance.population.Remove(gameObject);
+                    Destroy(gameObject);
+                }
+            }
+            else
+            {
+                VillageManager.Instance.currentFood -= 1;
+                hungerCount = 0;
+            }
+
+            if (VillageManager.Instance.currentWater <= 0)
+            {
+                thirstCount++;
+                if(thirstCount >= statArray[(int)E_STATS.CONSTITUTION] / 3)
+                {
+                    Debug.Log("Villager Died From Dehydration");
+                    if (partner)
+                    {
+                        partner.GetComponent<VillagerBaseBehavior>().partner = null;
+                        partner = null;
+                    }
+                    VillageManager.Instance.population.Remove(gameObject);
+                    Destroy(gameObject);
+                }
+            }
+            else
+            {
+                VillageManager.Instance.currentWater -= 1;
+                thirstCount = 0;
+            }
         }
 
         if (age >= 55) // old age check
         {
             float chanceOfDeath = VillageManager.Instance.chanceOfDeathFunction(age);
-            if(chanceOfDeath >= Random.Range(0,100)) // villager dies
+            if(chanceOfDeath >= Random.Range(0,101)) // villager dies
             {
-                partner.GetComponent<VillagerBaseBehavior>().partner = null;
+                Debug.Log("Villager Died From Old Age");
+                if (partner)
+                {
+                    partner.GetComponent<VillagerBaseBehavior>().partner = null;
+                    partner = null;
+                }
+
                 VillageManager.Instance.population.Remove(gameObject);
                 Destroy(gameObject);
             }

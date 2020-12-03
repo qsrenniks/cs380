@@ -73,8 +73,7 @@ public class GameManager : MonoBehaviour
 
     public bool DifficultyClassCheck(int DC, int MOD)
     {
-        Debug.Log("Difficulty Check");
-        return DC <= Random.Range(1, 20) + MOD;
+        return DC <= Random.Range(1, 21) + MOD;
     }
 
     // Start is called before the first frame update

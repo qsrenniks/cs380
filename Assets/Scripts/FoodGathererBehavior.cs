@@ -25,77 +25,25 @@ public class FoodGathererBehavior : MonoBehaviour
     {
         VillagerBaseBehavior baseBehavior = gameObject.GetComponent<VillagerBaseBehavior>();
         var knownFoodSources = VillageManager.Instance.knownFoodSources;
-        if(knownFoodSources.Count == 0)
+        if(knownFoodSources.Count != 0)
         {
             if(baseBehavior.hasAction)
             {
-                int direction = Random.Range(1, 4);
-                switch (direction)
+                foreach ((int, int) foodSource in knownFoodSources)
                 {
-                    case 1:
-                        if (checkForFood(baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 - 1))
+                    if(checkForFood(foodSource.Item1,foodSource.Item2))
+                    {
+                        if (GameManager.Instance.DifficultyClassCheck(13, baseBehavior.statModArray[(int)VillagerBaseBehavior.E_STATS.WISDOM]))
                         {
-                            knownFoodSources.Add((baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 - 1));
-                            baseBehavior.currentLocation = (baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 - 1);
+                            TerrainGenerator terrainGenerator = VillageManager.Instance.terrainManager.GetComponent<TerrainGenerator>();
+                            VillageManager.Instance.currentFood += (30 + baseBehavior.statArray[(int)VillagerBaseBehavior.E_STATS.WISDOM]); ;
+                            VillageManager.Instance.currentFood = Mathf.Min(VillageManager.Instance.currentFood, VillageManager.Instance.foodCapacity);
+                            break;
                         }
-                        else if (checkForFood(baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 - 2))
-                        {
-                            knownFoodSources.Add((baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 - 2));
-                            baseBehavior.currentLocation = (baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 - 2);
-                        }
-                        break;
-                    case 2:
-                        if (checkForFood(baseBehavior.currentLocation.Item1 + 1, baseBehavior.currentLocation.Item2))
-                        {
-                            knownFoodSources.Add((baseBehavior.currentLocation.Item1 + 1, baseBehavior.currentLocation.Item2));
-                            baseBehavior.currentLocation = (baseBehavior.currentLocation.Item1 + 1, baseBehavior.currentLocation.Item2);
-                        }
-                        else if (checkForFood(baseBehavior.currentLocation.Item1 + 2, baseBehavior.currentLocation.Item2))
-                        {
-                            knownFoodSources.Add((baseBehavior.currentLocation.Item1 + 2, baseBehavior.currentLocation.Item2));
-                            baseBehavior.currentLocation = (baseBehavior.currentLocation.Item1 + 2, baseBehavior.currentLocation.Item2);
-                        }
-                        break;
-                    case 3:
-                        if (checkForFood(baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 + 1))
-                        {
-                            knownFoodSources.Add((baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 + 1));
-                            baseBehavior.currentLocation = (baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 + 1);
-                        }
-                        else if (checkForFood(baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 + 2))
-                        {
-                            knownFoodSources.Add((baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 + 2));
-                            baseBehavior.currentLocation = (baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2 + 2);
-                        }
-                        break;
-                    case 4:
-                        if (checkForFood(baseBehavior.currentLocation.Item1 + 1, baseBehavior.currentLocation.Item2))
-                        {
-                            knownFoodSources.Add((baseBehavior.currentLocation.Item1 + 1, baseBehavior.currentLocation.Item2));
-                            baseBehavior.currentLocation = (baseBehavior.currentLocation.Item1 + 1, baseBehavior.currentLocation.Item2);
-                        }
-                        else if (checkForFood(baseBehavior.currentLocation.Item1 + 2, baseBehavior.currentLocation.Item2))
-                        {
-                            knownFoodSources.Add((baseBehavior.currentLocation.Item1 + 2, baseBehavior.currentLocation.Item2));
-                            baseBehavior.currentLocation = (baseBehavior.currentLocation.Item1 + 2, baseBehavior.currentLocation.Item2);
-                        }
-                        break;
+                    }
                 }
                 baseBehavior.hasAction = false;
             }
-        }
-        else if(baseBehavior.hasAction)
-        {
-            if (checkForFood(baseBehavior.currentLocation.Item1, baseBehavior.currentLocation.Item2))
-            {
-                return;
-            }
-            else
-            {
-                int location = Random.Range(0, knownFoodSources.Count - 1);
-
-            }
-
         }
     }
 }

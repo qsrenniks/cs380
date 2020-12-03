@@ -109,7 +109,7 @@ public class TerrainGenerator : MonoBehaviour
   public Layer foliageLayer = new Layer();
   public Layer snowLayer = new Layer();
 
-  public int dropletDensity = 10; // every step in a direction knocks one off this list until the rain drop settles
+    public int dropletDensity = 10; // every step in a direction knocks one off this list until the rain drop settles
   public float maxSedimentPickup = 0.5f;
   public float minSedimentPickup = 0.01f;
   public int seed;
@@ -256,7 +256,19 @@ public class TerrainGenerator : MonoBehaviour
           foliageLayer.setTileIntensity(x, y, 0.0f);
         }
 
-        if(IsLand(x, y) || IsRock(x, y))
+        float xCoordFood = (((float)(x) / (float)(mapSize))) * treeR;
+        float yCoordFood = (((float)(y) / (float)(mapSize))) * treeR;
+        float foodFinal = Mathf.PerlinNoise(xCoordFood, yCoordFood);
+        if (IsLand(x, y) && foodFinal >= 0.65f)
+        {
+          foodLayer.setTileIntensity(x, y, 1.0f);
+        }
+        else
+        {
+          foodLayer.setTileIntensity(x, y, 0.0f);
+        }
+
+        if (IsLand(x, y) || IsRock(x, y))
         {
           float height = pix[x * mapSize + y];
           float snow = (currentSnowAmount) * height;
