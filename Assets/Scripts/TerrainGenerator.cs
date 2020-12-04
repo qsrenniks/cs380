@@ -238,7 +238,7 @@ public class TerrainGenerator : MonoBehaviour
     }
     else if(cW == WeatherController.weather.clear)
     {
-      float snowDelta = Time.deltaTime * TimeManager.Instance.realSecondsToGameDay;
+      float snowDelta = Time.deltaTime * 1.0f / TimeManager.Instance.realSecondsToGameDay;
       currentSnowAmount -= snowDelta;
       currentSnowAmount = Mathf.Clamp(currentSnowAmount, 0.0f, 1.0f);
 
@@ -247,7 +247,7 @@ public class TerrainGenerator : MonoBehaviour
     }
     else if(cW == WeatherController.weather.snow)
     {
-      currentSnowAmount += Time.deltaTime * TimeManager.Instance.realSecondsToGameDay;
+      currentSnowAmount += Time.deltaTime * 1.0f / TimeManager.Instance.realSecondsToGameDay;
       currentSnowAmount = Mathf.Clamp(currentSnowAmount, 0.0f, 1.0f);
     }
 
