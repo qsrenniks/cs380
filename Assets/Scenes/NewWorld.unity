@@ -6453,8 +6453,8 @@ MonoBehaviour:
   WCwindIntensity: 0
   WCfogIntensity: 0
   clearTo: {x: 0.6, y: 0.2, z: 0.2}
-  rainTo: {x: 0.5, y: 0.4, z: 0.1}
-  snowTo: {x: 0.5, y: 0.4, z: 0.1}
+  rainTo: {x: 0.7, y: 0.2, z: 0.1}
+  snowTo: {x: 0.7, y: 0.2, z: 0.1}
   WeatherType:
   - 0
   - 0
@@ -7671,8 +7671,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 97, y: 15.0000305}
-  m_SizeDelta: {x: 420, y: 60}
+  m_AnchoredPosition: {x: 165.34, y: 15.0000305}
+  m_SizeDelta: {x: 556.6847, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1977453711
 MonoBehaviour:
@@ -7707,7 +7707,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Menu
+  m_Text: 'Press R to reset the simulation. '
 --- !u!222 &1977453712
 CanvasRenderer:
   m_ObjectHideFlags: 0

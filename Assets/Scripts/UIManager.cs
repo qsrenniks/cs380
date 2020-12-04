@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -21,8 +22,8 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.H))
-            settingsBar.SetActive(!settingsBar.activeSelf);
+        if (Input.GetKeyDown(KeyCode.R))
+            SceneManager.LoadScene("NewWorld");
     }
 
     public void ChangeType(int t)
