@@ -160,7 +160,7 @@ public class TerrainGenerator : MonoBehaviour
       currentWaterLevel = waterLevel;
       //populaceLayer.setTileIntensity(10, 10, 1.0f);
       CalcNoise();
-      Initialize(false);
+      Initialize(true);
     }
     void Start()
     {
@@ -199,12 +199,13 @@ public class TerrainGenerator : MonoBehaviour
 
     void CalcNoise()
     {
+      int seed = Random.Range(0, 10000);
       for(int y = 0; y < mapSize; ++y)
       {
         for(int x = 0; x < mapSize; ++x)
         {
-          float xCoord = (((float)(x) / (float)(mapSize))) * scale;
-          float yCoord = (((float)(y) / (float)(mapSize))) * scale;
+          float xCoord = ((((float)(x) / (float)(mapSize))) * scale) + (float)seed;
+          float yCoord = ((((float)(y) / (float)(mapSize))) * scale) + (float)seed;
 
           float final = Mathf.PerlinNoise(xCoord, yCoord) 
           + 0.5f * Mathf.PerlinNoise(2.0f * xCoord, 2.0f * yCoord)
@@ -339,11 +340,12 @@ public class TerrainGenerator : MonoBehaviour
   void Initialize(bool setSeed)
   {
     //initializes the seed for the raindrop generator, if its different it resets the seed
-    if(setSeed || rand == null || currentSeed != seed)
-    {
-      rand = new System.Random(seed);
-      currentSeed = seed;
-    }
+    // if(setSeed || rand == null || currentSeed != seed)
+    // {
+    //   rand = new System.Random(seed);
+    //   currentSeed = seed;
+    // }
+    rand = new System.Random();
 
     //if the map has changed or the indices arent setup we need to set them up
     // this method of erosion distributes the sediment collection evenly around the rain drop
