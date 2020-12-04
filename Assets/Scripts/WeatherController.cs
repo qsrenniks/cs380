@@ -20,8 +20,8 @@ public class WeatherController : MonoBehaviour
     public float WCfogIntensity = 1f;
 
     public Vector3 clearTo = new Vector3( 0.6f, 0.2f, 0.2f );
-    public Vector3 rainTo = new Vector3(0.6f, 0.2f, 0.2f);
-    public Vector3 snowTo = new Vector3(0.6f, 0.2f, 0.2f);
+    public Vector3 rainTo = new Vector3(0.7f, 0.2f, 0.1f);
+    public Vector3 snowTo = new Vector3(0.7f, 0.1f, 0.2f);
 
 
     public double[][] WeatherMatrix = new double[3][]; // 0 = clear, 1 = rain, 2 = snow
@@ -29,7 +29,7 @@ public class WeatherController : MonoBehaviour
     public enum weather {clear = 0 , rain = 1, snow = 2};
     public enum secondWeather { none, wind, fog, windFog};
 
-    weather[] weatherArray = { weather.clear, weather.rain, weather.snow };
+    public weather[] weatherArray = { weather.clear, weather.rain, weather.snow };
 
     public weather currentWeather = weather.rain; // 0 = rain, 1 = snow, 2 = clear
     public secondWeather currentSecondW = secondWeather.none;

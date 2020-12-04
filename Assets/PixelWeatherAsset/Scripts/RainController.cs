@@ -59,7 +59,7 @@ public class RainController : MonoBehaviour
     }
 
     void UpdateAll(){
-        rainEmission.rateOverTime = 200f * masterIntensity * rainIntensity;
+        rainEmission.rateOverTime = 400f * masterIntensity * rainIntensity;
         rainForce.x = new ParticleSystem.MinMaxCurve(-25f * windIntensity * masterIntensity, (-3-30f * windIntensity) * masterIntensity);
         windEmission.rateOverTime = 5f * masterIntensity * (windIntensity + fogIntensity);
         windMain.startLifetime = 5f + 5f * (1f - windIntensity);

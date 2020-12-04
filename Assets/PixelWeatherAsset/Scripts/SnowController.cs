@@ -57,7 +57,7 @@ public class SnowController : MonoBehaviour
     }
 
     void UpdateAll(){
-        snowEmission.rateOverTime = 110f * masterIntensity * snowIntensity;
+        snowEmission.rateOverTime = 300f * masterIntensity * snowIntensity;
         snowShape.radius = 30f * Mathf.Clamp(windIntensity, 0.4f, 1f) * masterIntensity;
         snowForce.x = new ParticleSystem.MinMaxCurve(-9f * windIntensity, -3-14f * windIntensity);
         windEmission.rateOverTime = 14f * masterIntensity * (windIntensity + fogIntensity);

@@ -128,4 +128,9 @@ public class TimeManager : MonoBehaviour
             dayTimer.reset();
         }
     }
+
+    public void onSliderChange(float value)
+    {
+        dayTimer = new Timer(value);
+    }
 }
