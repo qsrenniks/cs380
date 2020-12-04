@@ -110,37 +110,49 @@ public class TerrainGenerator : MonoBehaviour
   public Layer snowLayer = new Layer();
 
     public int dropletDensity = 10; // every step in a direction knocks one off this list until the rain drop settles
-  public float maxSedimentPickup = 0.5f;
-  public float minSedimentPickup = 0.01f;
-  public int seed;
-  public int erosionRadius = 3;
-  public float startSpeed = 1.0f;
-  public float startDropletVolume = 1.0f;
-  public int maxDropletLifetime = 30;
-  public float inertia = 0.05f;
-  public float sedimentCapacityCoeff = 4.0f;
-  public float minSedimentCapacity = 0.01f;
-  public float gravity = 4.0f;
-  public float evaporationSpeed = 0.01f;
-  public float depositSpeed = 0.3f;
-  public float erodeSpeed = 0.3f;
-  public int rainPerDay = 10;
-  public float treeR = 50.0f;
-  public float snowElevationLimit = 0.9f;
+    public float maxSedimentPickup = 0.5f;
+    public float minSedimentPickup = 0.01f;
+    public int seed;
+    public int erosionRadius = 3;
+    public float startSpeed = 1.0f;
+    public float startDropletVolume = 1.0f;
+    public int maxDropletLifetime = 30;
+    public float inertia = 0.05f;
+    public float sedimentCapacityCoeff = 4.0f;
+    public float minSedimentCapacity = 0.01f;
+    public float gravity = 4.0f;
+    public float evaporationSpeed = 0.01f;
+    public float depositSpeed = 0.3f;
+    public float erodeSpeed = 0.3f;
+    public int rainPerDay = 10;
+    public float treeR = 50.0f;
+    public float snowElevationLimit = 0.9f;
 
-  private float currentSnowAmount = 0.0f;
+    private float currentSnowAmount = 0.0f;
 
   //this is the erosion layer of the map that helps tell each node how they should evenly pull and place sediment
-  int [][] erosionIndices;
-  float [][] erosionWeights;
+    int [][] erosionIndices;
+    float [][] erosionWeights;
 
-  System.Random rand;
-  int currentSeed;
-  int currentErosionRadius;
-  int currentMapSize;
+    System.Random rand;
+    int currentSeed;
+    int currentErosionRadius;
+    int currentMapSize;
 
-  void Awake()
-  {
+    public void ResetSimulation()
+    {
+      pix = new float[mapSize * mapSize];
+      cameraObject.transform.position = new Vector3((float)mapSize / 2.0f, (float)mapSize / 2.0f, -10.0f);
+      Camera a = cameraObject.GetComponent(typeof(Camera)) as Camera;
+      a.orthographicSize = ((float)mapSize / 2.0f) + 15.0f;
+      currentWaterLevel = waterLevel;
+      //populaceLayer.setTileIntensity(10, 10, 1.0f);
+      CalcNoise();
+      Initialize(true);
+    }
+
+    void Awake()
+    {
       pix = new float[mapSize * mapSize];
       cameraObject.transform.position = new Vector3((float)mapSize / 2.0f, (float)mapSize / 2.0f, -10.0f);
       Camera a = cameraObject.GetComponent(typeof(Camera)) as Camera;
@@ -149,70 +161,70 @@ public class TerrainGenerator : MonoBehaviour
       //populaceLayer.setTileIntensity(10, 10, 1.0f);
       CalcNoise();
       Initialize(false);
-  }
-  void Start()
-  {
-      
-  }
-
-  public bool IsWater(int x, int y)
-  {
-    float r = pix[x * mapSize + y];
-    if (r < currentWaterLevel)
-    {
-      return true;
     }
-    return false;
-  }
-
-  public bool IsLand(int x, int y)
-  {
-    float r = pix[x * mapSize + y];
-    if (r >= currentWaterLevel && r < rockLevel)
+    void Start()
     {
-      return true;
+
     }
-    return false;
-  }
 
-  public bool IsRock(int x, int y)
-  {
-    float r = pix[x * mapSize + y];
-    if (r >= rockLevel)
+    public bool IsWater(int x, int y)
     {
-      return true;
-    }
-    return false;
-  }
-
-  void CalcNoise()
-  {
-    for(int y = 0; y < mapSize; ++y)
-    {
-      for(int x = 0; x < mapSize; ++x)
+      float r = pix[x * mapSize + y];
+      if (r < currentWaterLevel)
       {
-        float xCoord = (((float)(x) / (float)(mapSize))) * scale;
-        float yCoord = (((float)(y) / (float)(mapSize))) * scale;
+        return true;
+      }
+      return false;
+    }
 
-        float final = Mathf.PerlinNoise(xCoord, yCoord) 
-        + 0.5f * Mathf.PerlinNoise(2.0f * xCoord, 2.0f * yCoord)
-        + 0.25f * Mathf.PerlinNoise(4.0f * xCoord, 4.0f * yCoord);
-        pix[x * mapSize + y] = 1.0f - Mathf.Pow(final, power);
+    public bool IsLand(int x, int y)
+    {
+      float r = pix[x * mapSize + y];
+      if (r >= currentWaterLevel && r < rockLevel)
+      {
+        return true;
+      }
+      return false;
+    }
+
+    public bool IsRock(int x, int y)
+    {
+      float r = pix[x * mapSize + y];
+      if (r >= rockLevel)
+      {
+        return true;
+      }
+      return false;
+    }
+
+    void CalcNoise()
+    {
+      for(int y = 0; y < mapSize; ++y)
+      {
+        for(int x = 0; x < mapSize; ++x)
+        {
+          float xCoord = (((float)(x) / (float)(mapSize))) * scale;
+          float yCoord = (((float)(y) / (float)(mapSize))) * scale;
+
+          float final = Mathf.PerlinNoise(xCoord, yCoord) 
+          + 0.5f * Mathf.PerlinNoise(2.0f * xCoord, 2.0f * yCoord)
+          + 0.25f * Mathf.PerlinNoise(4.0f * xCoord, 4.0f * yCoord);
+          pix[x * mapSize + y] = 1.0f - Mathf.Pow(final, power);
+        }
       }
     }
-  }
 
-  public bool IsInBounds(int x, int y)
-  {
+    public bool IsInBounds(int x, int y)
+    {
      if (x < 0 || x >= mapSize)
-       return false;
+     return false;
      if (y < 0 || y >= mapSize)
-       return false;
+     return false;
      return true;
-  }
+   }
 
-  void Update()
-  {
+   void Update()
+   {
     WeatherController weatherController = weatherManager.GetComponent(typeof(WeatherController)) as WeatherController;
     WeatherController.weather cW = weatherController.getCurrentWeather();
 
