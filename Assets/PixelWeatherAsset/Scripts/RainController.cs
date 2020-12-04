@@ -44,8 +44,8 @@ public class RainController : MonoBehaviour
         fogEmission = fogPart.emission;
 
         Vector3 v = MainCamera.transform.position;
-        rainPart.transform.position = new Vector3(v.x, v.y + 65.0f, 0);
-        windPart.transform.position = new Vector3(v.x + 150.0f, v.y-2.3f, 0);
+        rainPart.transform.position = new Vector3(v.x-50.0f, v.y + 65.0f, 0);
+        windPart.transform.position = new Vector3(v.x + 0.0f, v.y-2.3f, 0);
         lightningPart.transform.position = new Vector3(v.x - 0.5f, v.y+3.35f, 4.46f);
         fogPart.transform.position = new Vector3(v.x +150.8f, v.y+1.2f, 4.46f);
 
